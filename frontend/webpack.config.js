@@ -73,12 +73,14 @@ module.exports = {
     static: path.join(__dirname, "build"),
     compress: true,
     port: 3000,
+    historyApiFallback: true,
   },
   optimization: optimization(),
   plugins: [
     new ForkTsCheckerWebpackPlugin(),
     new HTMLWebpackPlugin({
-      template: './src/index.html'
+      template: './src/index.html',
+      favicon: './src/favicon.ico'
     }),
     new CleanWebpackPlugin(),
     new CopyWebpackPlugin({
