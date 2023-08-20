@@ -8,15 +8,14 @@ const config = {
 
 const theme = extendTheme({
     styles: {
-        global: (props) => {
-            return {
-                body: {
-                    bg: mode('gray.100', 'gray.700')(props),
-                    color: mode('gray.700', 'gray.100')(props),
-                },
-            }
-        },
-    }, 
+        global: (props) => ({
+            body: {
+                bg: mode('gray.100', 'gray.700')(props),
+                color: mode('gray.700', 'gray.100')(props),
+                fontFamily: `'Montserrat', sans-serif`
+            },
+        }),
+    },
     config
 })
 

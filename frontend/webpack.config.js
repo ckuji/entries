@@ -79,14 +79,14 @@ module.exports = {
   plugins: [
     new ForkTsCheckerWebpackPlugin(),
     new HTMLWebpackPlugin({
-      template: './src/index.html',
-      favicon: './src/favicon.ico'
+      template: './src/public/index.html',
+      favicon: './src/public/favicon.ico'
     }),
     new CleanWebpackPlugin(),
     new CopyWebpackPlugin({
       patterns: [
         {
-          from: path.resolve(__dirname, 'src/favicon.ico'),
+          from: path.resolve(__dirname, 'src/public/favicon.ico'),
           to: path.resolve(__dirname, 'build')
         }
       ]
