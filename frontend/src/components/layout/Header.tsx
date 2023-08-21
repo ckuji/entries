@@ -1,24 +1,25 @@
 import { Box, Switch, Text, useColorMode, Center, Button } from "@chakra-ui/react";
 import React, { useState } from "react";
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  useDisclosure
-} from '@chakra-ui/react'
+import { useDisclosure } from '@chakra-ui/react'
+import IntroModal from "../common/modals/IntroModal";
 
 const Header: React.FC = () => {
     const { colorMode, toggleColorMode } = useColorMode();
     const [isLogin, setIsLogin] = useState<boolean>(false);
-    const { isOpen, onOpen, onClose } = useDisclosure()
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const [isLoginModal, setIsLoginModal] = useState(true);
 
     const toggleColorModeHandler = () => {
         toggleColorMode();
     };
+
+    const onLoginModalHandler = () => {
+
+    }
+
+    const onRegistrationModalHandler = () => {
+
+    }
 
     return (
         <Box h='60px' display='flex' justifyContent='space-between' alignItems='center'>
@@ -47,23 +48,13 @@ const Header: React.FC = () => {
                     }
                 </Box>
             </Box>
-            <Modal isOpen={isOpen} onClose={onClose} trapFocus={false}>
-                <ModalOverlay />
-                <ModalContent>
-                    <ModalHeader>Modal Title</ModalHeader>
-                    <ModalCloseButton />
-                    <ModalBody>
-                        Lorem, ipsum.
-                    </ModalBody>
-
-                    <ModalFooter>
-                        <Button colorScheme='blue' mr={3} onClick={onClose}>
-                        Close
-                        </Button>
-                        <Button variant='ghost'>Secondary Action</Button>
-                    </ModalFooter>
-                </ModalContent>
-            </Modal>
+            <IntroModal
+                isOpen={isOpen}
+                onClose={onClose}
+                isLoginModal={isLoginModal}
+                setIsLoginModal={setIsLoginModal}
+                onConfirm={isLoginModal ? onLoginModalHandler : onRegistrationModalHandler}
+            />
         </Box>
     )
 }
