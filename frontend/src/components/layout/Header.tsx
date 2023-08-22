@@ -1,5 +1,5 @@
 import { Box, Switch, Text, useColorMode, Center, Button } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDisclosure } from '@chakra-ui/react'
 import IntroModal from "../common/modals/IntroModal";
 
@@ -8,6 +8,17 @@ const Header: React.FC = () => {
     const [isLogin, setIsLogin] = useState<boolean>(false);
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [isLoginModal, setIsLoginModal] = useState(true);
+    const [formValues, setFormValues] = useState({
+        login: '', email: '', password: ''
+    });
+
+    const onChangeFormValues = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setFormValues({...formValues, [event.target.name]: event.target.value});
+    }
+
+    useEffect(() => {
+        console.log('formValues is ...', formValues)
+    }, [formValues])
 
     const toggleColorModeHandler = () => {
         toggleColorMode();
@@ -54,6 +65,8 @@ const Header: React.FC = () => {
                 isLoginModal={isLoginModal}
                 setIsLoginModal={setIsLoginModal}
                 onConfirm={isLoginModal ? onLoginModalHandler : onRegistrationModalHandler}
+                formValues={formValues}
+                onChangeFormValues={onChangeFormValues}
             />
         </Box>
     )
