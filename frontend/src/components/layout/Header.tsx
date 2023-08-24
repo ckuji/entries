@@ -16,10 +16,6 @@ const Header: React.FC = () => {
         setFormValues({...formValues, [event.target.name]: event.target.value});
     }
 
-    useEffect(() => {
-        console.log('formValues is ...', formValues)
-    }, [formValues])
-
     const toggleColorModeHandler = () => {
         toggleColorMode();
     };

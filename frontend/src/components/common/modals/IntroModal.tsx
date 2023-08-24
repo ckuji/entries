@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
     Modal,
     ModalOverlay,
@@ -11,9 +11,12 @@ import {
     FormControl,
     FormLabel,
     Input,
-    FormHelperText,
-    FormErrorMessage
+    FormErrorMessage,
+    Box,
+    Center,
+    useColorMode
 } from '@chakra-ui/react';
+import { ViewIcon } from "@chakra-ui/icons";
 
 type IntroModalProps = {
     isOpen: boolean,
@@ -41,6 +44,8 @@ const IntroModal: React.FC<IntroModalProps> = ({
     const isLoginError = false;
     const isPasswordError = false;
     const isEmailError = false;
+    const [showPassword, setShowPassword] = useState<boolean>(false);
+    const { colorMode } = useColorMode();
 
     return (
         <Modal isOpen={isOpen} onClose={onClose} trapFocus={false}>
@@ -51,47 +56,74 @@ const IntroModal: React.FC<IntroModalProps> = ({
                 <ModalBody>
                     <form>
                         <FormControl isInvalid={isLoginError} mb='20px'>
-                            <FormLabel>Login</FormLabel>
-                            <Input type='text' value={formValues.login} onChange={onChangeFormValues} name='login' />
+                            <FormLabel>Логин</FormLabel>
+                            <Input
+                                type='text'
+                                value={formValues.login}
+                                onChange={onChangeFormValues}
+                                name='login'
+                            />
                             {!isLoginError ? (
-                                <FormHelperText>
-                                    Enter the login.
-                                </FormHelperText>
+                                ""
                             ) : (
                                 <FormErrorMessage>Login error</FormErrorMessage>
                             )}
                         </FormControl>
 
                         <FormControl isInvalid={isPasswordError} mb='20px'>
-                            <FormLabel>Password</FormLabel>
-                            <Input type='password' value={formValues.password} onChange={onChangeFormValues} name='password' />
+                            <FormLabel>Пароль</FormLabel>
+                            <Box position='relative'>
+                                <Input
+                                    type={showPassword ? 'text' : 'password'}
+                                    value={formValues.password}
+                                    onChange={onChangeFormValues}
+                                    name='password'
+                                />
+                                <Center
+                                    w='20px'
+                                    h='20px'
+                                    position='absolute'
+                                    top='50%'
+                                    transform='translateY(-50%)'
+                                    right='10px'
+                                    zIndex='1'
+                                    cursor='pointer'
+                                    onClick={() => setShowPassword(!showPassword)}
+                                >
+                                    <ViewIcon/>
+                                </Center>
+                            </Box>
                             {!isPasswordError ? (
-                                <FormHelperText>
-                                    Enter the password.
-                                </FormHelperText>
+                                ""
                             ) : (
                                 <FormErrorMessage>Password error</FormErrorMessage>
                             )}
                         </FormControl>
 
-                        <FormControl isInvalid={isEmailError} mb='20px'>
-                            <FormLabel>Email</FormLabel>
-                            <Input type='email' value={formValues.email} onChange={onChangeFormValues} name='email' />
-                            {!isEmailError ? (
-                                <FormHelperText>
-                                    Enter the email.
-                                </FormHelperText>
-                            ) : (
-                                <FormErrorMessage>Email error</FormErrorMessage>
-                            )}
-                        </FormControl>
+                        {!isLoginModal ? (
+                            <FormControl isInvalid={isEmailError} mb='20px'>
+                                <FormLabel>Электронная почта</FormLabel>
+                                <Input
+                                    type='email'
+                                    value={formValues.email}
+                                    onChange={onChangeFormValues}
+                                    name='email'
+                                />
+                                {!isEmailError ? (
+                                    ""
+                                ) : (
+                                    <FormErrorMessage>Email error</FormErrorMessage>
+                                )}
+                            </FormControl>
+                        ) : ("")}
+                        
                     </form>
                 </ModalBody>
                 <ModalFooter>
-                    <Button variant='outline' colorScheme='cyan' onClick={onConfirm} mr='15px'>
+                    <Button variant='outline' colorScheme={colorMode === 'light' ? 'cyan' : 'teal'} onClick={onConfirm} mr='15px'>
                         {isLoginModal ? 'Войти' : 'Зарегистрироваться'}
                     </Button>
-                    <Button variant='fill' colorScheme='cyan' onClick={() => setIsLoginModal(!isLoginModal)}>
+                    <Button variant='fill' colorScheme={colorMode === 'light' ? 'cyan' : 'teal'} onClick={() => setIsLoginModal(!isLoginModal)}>
                         Перейти {isLoginModal ? 'к регистрации' : 'ко входу'}
                     </Button>
                 </ModalFooter>

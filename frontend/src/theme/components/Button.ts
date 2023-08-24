@@ -7,31 +7,30 @@ const baseStyle = defineStyle({
 
 const sizes = {
   md: defineStyle({
-    fontSize: '14px',
+    fontSize: 'sm',
     fontWeight: '500',
-    minW: '200px'
   }),
 };
 
 const fillVariant = defineStyle((props) => {
   const { colorScheme: c } = props;
   return {
-    bg: `${c}.500`,
+    bg: `${c}.600`,
     color: 'white',
     _dark: {
-      bg: `${c}.200`,
-      color: 'gray.800',
+      bg: `${c}.500`,
+      color: 'gray.900',
     },
     _hover: {
-      bg: `${c}.600`,
+      bg: `${c}.650`,
       _dark: {
-        bg: `${c}.300`,
+        bg: `${c}.550`,
       },
     },
     _active: {
       bg: `${c}.700`,
       _dark: {
-        bg: `${c}.400`,
+        bg: `${c}.600`,
       }
     },
   };
@@ -40,20 +39,25 @@ const fillVariant = defineStyle((props) => {
 const outlineVariant = defineStyle((props) => {
   const { colorScheme: c } = props;
   return {
-    color: `${c}.700`,
+    color: `${c}.600`,
     _dark: {
       color: 'gray.100',
+      borderColor: 'gray.100'
     },
     _hover: {
-      color: `${c}.600`,
+      color: `${c}.650`,
+      bg: 'none',
       _dark: {
-        color: 'gray.200',
+        color: 'gray.300',
+        borderColor: 'gray.300'
       },
     },
     _active: {
-      bg: `${c}.200`,
+      color: `${c}.700`,
+      bg: 'none',
       _dark: {
-        bg: `${c}.500`,
+        color: 'gray.350',
+        borderColor: 'gray.350'
       }
     },
   };
