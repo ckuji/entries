@@ -119,7 +119,7 @@ const IntroModal: React.FC<IntroModalProps> = ({
                         
                     </form>
                 </ModalBody>
-                <ModalFooter>
+                <ModalFooter mb="10px">
                     <Button variant='outline' colorScheme={colorMode === 'light' ? 'cyan' : 'teal'} onClick={onConfirm} mr='15px'>
                         {isLoginModal ? 'Войти' : 'Зарегистрироваться'}
                     </Button>
