@@ -63,7 +63,12 @@ module.exports = {
             ],
           },
         },
-      }
+      },
+      {
+        test: /\.ts$/,
+        enforce: "pre",
+        use: ["source-map-loader"],
+      },
     ],
   },
   resolve: {
