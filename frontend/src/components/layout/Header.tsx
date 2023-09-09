@@ -16,7 +16,7 @@ const Header: React.FC = () => {
 
     const onChangeFormValues = (event: React.ChangeEvent<HTMLInputElement>) => {
         setFormValues({...formValues, [event.target.name]: event.target.value});
-    }
+    };
 
     const toggleColorModeHandler = () => {
         toggleColorMode();
@@ -28,25 +28,25 @@ const Header: React.FC = () => {
                 login: formValues.login, password: formValues.password
             }, {
                 withCredentials: true
-            })
+            });
             
         } catch (error) {
             
         };
-    }
+    };
 
     const onRegistrationModalHandler = () => {
         
-    }
+    };
 
     const fetchLoginedUser = async () => {
         const {data} = await axios.get(`${BASE_URL}/auth/profile`, {withCredentials: true});
         setLogin(data.login);
-    }
+    };
 
     useEffect(() => {
         fetchLoginedUser();
-    }, [])
+    }, []);
 
     return (
         <Box h='60px' display='flex' justifyContent='space-between' alignItems='center'>
