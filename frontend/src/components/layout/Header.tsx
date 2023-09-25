@@ -1,47 +1,98 @@
 import { Box, Switch, Text, useColorMode, Center, Button } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
-import { useDisclosure } from '@chakra-ui/react'
+import { useDisclosure } from '@chakra-ui/react';
 import IntroModal from "../common/modals/IntroModal";
 import axios from "axios";
 import { BASE_URL } from "../../constants";
+import { useAppDispatch } from "../../hooks";
+import { FormErrorsKeyArray, StatusMessageConstuction, UserFields, UserValidationError } from "../../types/base";
 
 const Header: React.FC = () => {
     const { colorMode, toggleColorMode } = useColorMode();
     const [login, setLogin] = useState<string | null>(null);
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [isLoginModal, setIsLoginModal] = useState(true);
-    const [formValues, setFormValues] = useState({
+    const dispatch = useAppDispatch();
+    const [formValues, setFormValues] = useState<UserFields>({
         login: '', email: '', password: ''
+    });
+    const [formErrors, setFormErrors] = useState<FormErrorsKeyArray>({});
+    const [registrationLoading, setRegistrationLoading] = useState<boolean>(false);
+    const [statusMessage, setStatusMessage] = useState<StatusMessageConstuction>({
+        status: '', message: ''
     });
 
     const onChangeFormValues = (event: React.ChangeEvent<HTMLInputElement>) => {
         setFormValues({...formValues, [event.target.name]: event.target.value});
     };
 
+    const onChangeFormValuesHandler = (event: React.ChangeEvent<HTMLInputElement>, field: string) => {
+        onChangeFormValues(event);
+        delete formErrors[field];
+    }
+
     const toggleColorModeHandler = () => {
         toggleColorMode();
     };
 
+    const setIsLoginModalHandler = () => {
+        if(!isLoginModal) {
+            setFormErrors({});
+        }
+        setIsLoginModal(!isLoginModal);
+        setFormValues({ login: '', email: '', password: '' });
+    }
+
     const onLoginModalHandler = async () => {
-        try {
-            await axios.post(`${BASE_URL}/auth/login`, {
-                login: formValues.login, password: formValues.password
-            }, {
-                withCredentials: true
-            });
+        // try {
+        //     await axios.post(`${BASE_URL}/auth/login`, {
+        //         login: formValues.login, password: formValues.password
+        //     }, {
+        //         withCredentials: true
+        //     });
             
-        } catch (error) {
+        // } catch (error) {
             
-        };
+        // };
     };
 
-    const onRegistrationModalHandler = () => {
-        
+    const registrationSuccessHandler = (login: string) => {
+        setStatusMessage({status: 'success', message: `Пользователь ${login} успешно создан`});
+        setTimeout(() => {
+            setStatusMessage({status: '', message: ''});
+            setIsLoginModalHandler();
+            setRegistrationLoading(false);
+        }, 2000);
+    }
+
+    const onRegistrationModalHandler = async () => {
+        try {
+            setRegistrationLoading(true);
+            
+            const response = await axios.post(`${BASE_URL}/user`, {
+              login: formValues.login, password: formValues.password, email: formValues.email
+            });
+            registrationSuccessHandler(response.data.login);
+
+        } catch (error: any) {
+            if(error.response.data.statusCode === 409) {
+                setStatusMessage({status: 'error', message: error.response.data.message});
+                return;
+            }
+
+            let formErrorsHelper: FormErrorsKeyArray = {};
+
+            error.response.data.message.map((item: UserValidationError) => {
+                formErrorsHelper[item.property] = Object.values(item.constraints);
+            });
+            setFormErrors(formErrorsHelper);
+            setRegistrationLoading(false);
+        }
     };
 
     const fetchLoginedUser = async () => {
-        const {data} = await axios.get(`${BASE_URL}/auth/profile`, {withCredentials: true});
-        setLogin(data.login);
+        // const {data} = await axios.get(`${BASE_URL}/auth/profile`, {withCredentials: true});
+        // setLogin(data.login);
     };
 
     useEffect(() => {
@@ -79,10 +130,13 @@ const Header: React.FC = () => {
                 isOpen={isOpen}
                 onClose={onClose}
                 isLoginModal={isLoginModal}
-                setIsLoginModal={setIsLoginModal}
+                setIsLoginModalHandler={setIsLoginModalHandler}
                 onConfirm={isLoginModal ? onLoginModalHandler : onRegistrationModalHandler}
                 formValues={formValues}
-                onChangeFormValues={onChangeFormValues}
+                onChangeFormValuesHandler={onChangeFormValuesHandler}
+                formErrors={formErrors}
+                registrationLoading={registrationLoading}
+                statusMessage={statusMessage}
             />
         </Box>
     )

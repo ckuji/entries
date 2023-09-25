@@ -2,7 +2,11 @@ import { defineStyle, defineStyleConfig } from "@chakra-ui/styled-system"
 
 const baseStyle = defineStyle({
     borderRadius: '8px',
-    p: '5px 10px'
+    p: '5px 10px',
+    _disabled: {
+      opacity: 0.5,
+      cursor: 'inherit'
+    }
 });
 
 const sizes = {
@@ -16,7 +20,7 @@ const fillVariant = defineStyle((props) => {
   const { colorScheme: c } = props;
   return {
     bg: `${c}.600`,
-    color: 'white',
+    color: '#fff',
     _dark: {
       bg: `${c}.500`,
       color: 'gray.900',
@@ -26,6 +30,12 @@ const fillVariant = defineStyle((props) => {
       _dark: {
         bg: `${c}.550`,
       },
+      _disabled: {
+        bg: `${c}.600`,
+        _dark: {
+          bg: `${c}.500`,
+        },
+      }
     },
     _active: {
       bg: `${c}.700`,
@@ -51,6 +61,13 @@ const outlineVariant = defineStyle((props) => {
         color: 'gray.300',
         borderColor: 'gray.300'
       },
+      _disabled: {
+        color: `${c}.600`,
+        _dark: {
+          color: 'gray.100',
+          borderColor: 'gray.100'
+        },
+      }
     },
     _active: {
       color: `${c}.700`,

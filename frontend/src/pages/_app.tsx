@@ -3,7 +3,9 @@ import Head from 'next/head';
 import { ChakraProvider } from '@chakra-ui/react';
 import theme from '../theme';
 import MainLayout from '../components/layout/MainLayout';
-import localFont from 'next/font/local'
+import localFont from 'next/font/local';
+import { store } from '../state/store';
+import { Provider } from 'react-redux';
 
 const montserrat = localFont({
     src: [
@@ -37,11 +39,14 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
                 <title>Next</title>
             </Head>
             <main className={montserrat.className}>
-                <ChakraProvider theme={theme}>
-                    <MainLayout>
-                        <Component {...pageProps} />
-                    </MainLayout>
-                </ChakraProvider>
+                <Provider store={store}>
+                    <ChakraProvider theme={theme}>
+                        <MainLayout>
+                            <Component {...pageProps} />
+                        </MainLayout>
+                    </ChakraProvider>
+                </Provider>
+
             </main>
         </>
     )
