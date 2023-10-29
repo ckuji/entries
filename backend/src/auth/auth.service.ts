@@ -13,13 +13,13 @@ export class AuthService {
 
     async signIn(login: string, pass: string, res: Response) : Promise<any> {
         const user = await this.usersService.getOneByLogin(login);
-        const isMatch = await bcrypt.compare(pass, user?.password);
-
-        if (!isMatch) {
-            throw new UnauthorizedException();
-        }
 
         if(user) {
+            const isMatch = await bcrypt.compare(pass, user?.password);
+            if (!isMatch) {
+                throw new UnauthorizedException();
+            }
+
             const payload = { sub: user.id, login: user.login };
             const accesToken = await this.jwtService.signAsync(payload);
 
@@ -28,6 +28,8 @@ export class AuthService {
             return {
                 message: 'success',
             };
+        } else {
+            throw new UnauthorizedException();
         }
     }
 }

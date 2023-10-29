@@ -1,4 +1,18 @@
-import { Box, Switch, Text, useColorMode, Center, Button } from "@chakra-ui/react";
+import { 
+    Box,
+    Switch,
+    Text,
+    useColorMode,
+    Center,
+    Button,
+    Popover,
+    PopoverTrigger,
+    PopoverContent,
+    PopoverArrow,
+    PopoverCloseButton,
+    PopoverHeader,
+    PopoverBody
+} from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useDisclosure } from '@chakra-ui/react';
 import IntroModal from "../common/modals/IntroModal";
@@ -6,6 +20,7 @@ import axios from "axios";
 import { BASE_URL } from "../../constants";
 import { useAppDispatch } from "../../hooks";
 import { FormErrorsKeyArray, StatusMessageConstuction, UserFields, UserValidationError } from "../../types/base";
+import LogoutPopover from "../common/modals/LogoutPopover";
 
 const Header: React.FC = () => {
     const { colorMode, toggleColorMode } = useColorMode();
@@ -21,6 +36,8 @@ const Header: React.FC = () => {
     const [statusMessage, setStatusMessage] = useState<StatusMessageConstuction>({
         status: '', message: ''
     });
+    const [fetchUserLoading, setFetchUserLoading] = useState<boolean>(false);
+    const [showLogoutPopover, setShowLogoutPopover] = useState<boolean>(false);
 
     const onChangeFormValues = (event: React.ChangeEvent<HTMLInputElement>) => {
         setFormValues({...formValues, [event.target.name]: event.target.value});
@@ -29,7 +46,7 @@ const Header: React.FC = () => {
     const onChangeFormValuesHandler = (event: React.ChangeEvent<HTMLInputElement>, field: string) => {
         onChangeFormValues(event);
         delete formErrors[field];
-    }
+    };
 
     const toggleColorModeHandler = () => {
         toggleColorMode();
@@ -40,30 +57,38 @@ const Header: React.FC = () => {
             setFormErrors({});
         }
         setIsLoginModal(!isLoginModal);
-        setFormValues({ login: '', email: '', password: '' });
-    }
-
-    const onLoginModalHandler = async () => {
-        // try {
-        //     await axios.post(`${BASE_URL}/auth/login`, {
-        //         login: formValues.login, password: formValues.password
-        //     }, {
-        //         withCredentials: true
-        //     });
-            
-        // } catch (error) {
-            
-        // };
+        setFormValues({login: '', email: '', password: ''});
     };
 
-    const registrationSuccessHandler = (login: string) => {
-        setStatusMessage({status: 'success', message: `Пользователь ${login} успешно создан`});
+    const setShowLogoutPopoverHandler = (value: boolean) => {
+        setShowLogoutPopover(value);
+    }
+
+    const registrationHandler = (status: string, message: string) => {
+        setStatusMessage({status, message});
         setTimeout(() => {
             setStatusMessage({status: '', message: ''});
-            setIsLoginModalHandler();
+            if(status === 'success') {
+                setIsLoginModalHandler();
+            }
             setRegistrationLoading(false);
         }, 2000);
-    }
+    };
+
+    const onLoginModalHandler = async () => {
+        try {
+            setRegistrationLoading(true);
+
+            const response = await axios.post(`${BASE_URL}/auth/login`, {
+                login: formValues.login, password: formValues.password
+            }, {
+                withCredentials: true
+            });
+            
+        } catch (error: any) {
+            registrationHandler('error', `Не верно введены логин или пароль`);
+        }
+    };
 
     const onRegistrationModalHandler = async () => {
         try {
@@ -72,11 +97,11 @@ const Header: React.FC = () => {
             const response = await axios.post(`${BASE_URL}/user`, {
               login: formValues.login, password: formValues.password, email: formValues.email
             });
-            registrationSuccessHandler(response.data.login);
+            registrationHandler('success', `Пользователь ${response.data.login} успешно создан`);
 
         } catch (error: any) {
             if(error.response.data.statusCode === 409) {
-                setStatusMessage({status: 'error', message: error.response.data.message});
+                registrationHandler('exist', error.response.data.message);
                 return;
             }
 
@@ -91,8 +116,15 @@ const Header: React.FC = () => {
     };
 
     const fetchLoginedUser = async () => {
-        // const {data} = await axios.get(`${BASE_URL}/auth/profile`, {withCredentials: true});
-        // setLogin(data.login);
+        try {
+            setFetchUserLoading(true);
+
+            const {data} = await axios.get(`${BASE_URL}/auth/profile`, {withCredentials: true});
+            setLogin(data.login);
+        } catch (e) {
+
+        }
+
     };
 
     useEffect(() => {
@@ -104,19 +136,35 @@ const Header: React.FC = () => {
             <Text>Logo</Text>
             <Box display='flex' alignItems='center'>
                 <Switch size='lg' onChange={toggleColorModeHandler} isChecked={colorMode === 'dark'}/>
-                <Box marginLeft='10px' p='0 5px'>      
+                <Box marginLeft='10px' p='0 5px'>
+
+                    {/* <Spinner />       */}
+
                     {login ? 
                         <Box display='flex' alignItems='center' gap='5px'>
                             <Text>{login}</Text>
-                            <Center w='24px' h='24px' cursor='pointer'>
-                                <svg width="14" height="10" viewBox="0 0 14 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M1 1L7 8L13 1"
-                                        stroke={colorMode === 'dark' ? 'var(--chakra-colors-gray-100)' : 'var(--chakra-colors-gray-700)'}
-                                        strokeWidth="1"
-                                    />
-                                </svg>
-                            </Center>
+                            <Box position='relative'>
+                                <Center
+                                    w='24px'
+                                    h='24px'
+                                    cursor='pointer'
+                                    transform={ showLogoutPopover ? 'rotate(180deg)' : 'none'}
+                                    onClick={() => setShowLogoutPopoverHandler(true)}
+                                >
+                                    <svg width="14" height="10" viewBox="0 0 14 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M1 1L7 8L13 1"
+                                            stroke={colorMode === 'dark' ? 'var(--chakra-colors-gray-100)' : 'var(--chakra-colors-gray-700)'}
+                                            strokeWidth="1"
+                                        />
+                                    </svg>
+                                </Center>
+                                {showLogoutPopover ?
+                                    <LogoutPopover setShowLogoutPopoverHandler={setShowLogoutPopoverHandler} /> : ''
+                                }
+                                
+                            </Box>
+
                             <Box rounded='full' w='45px' h='45px' bg='gray.300'></Box>
                         </Box>
                         :
@@ -139,7 +187,7 @@ const Header: React.FC = () => {
                 statusMessage={statusMessage}
             />
         </Box>
-    )
-}
+    );
+};
 
 export default Header;
