@@ -4,27 +4,20 @@ import {
     Text,
     useColorMode,
     Center,
-    Button,
-    Popover,
-    PopoverTrigger,
-    PopoverContent,
-    PopoverArrow,
-    PopoverCloseButton,
-    PopoverHeader,
-    PopoverBody
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
-import { useDisclosure } from '@chakra-ui/react';
+import { useDisclosure, Spinner } from '@chakra-ui/react';
 import IntroModal from "../common/modals/IntroModal";
 import axios from "axios";
 import { BASE_URL } from "../../constants";
-import { useAppDispatch } from "../../hooks";
+import { useAppDispatch, useAppSelector } from "../../hooks";
 import { FormErrorsKeyArray, StatusMessageConstuction, UserFields, UserValidationError } from "../../types/base";
 import LogoutPopover from "../common/modals/LogoutPopover";
+import { fetchLoginedUser, loginUser } from "../../state/slices/base";
 
 const Header: React.FC = () => {
     const { colorMode, toggleColorMode } = useColorMode();
-    const [login, setLogin] = useState<string | null>(null);
+    // const login = useAppSelector(state => state.base.userName);
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [isLoginModal, setIsLoginModal] = useState(true);
     const dispatch = useAppDispatch();
@@ -36,8 +29,9 @@ const Header: React.FC = () => {
     const [statusMessage, setStatusMessage] = useState<StatusMessageConstuction>({
         status: '', message: ''
     });
-    const [fetchUserLoading, setFetchUserLoading] = useState<boolean>(false);
     const [showLogoutPopover, setShowLogoutPopover] = useState<boolean>(false);
+    // const loginLoading: string = useAppSelector(state => state.base.loginLoading);
+    const {fetchUserLoading, loginLoading, userName} = useAppSelector(state => state.base);
 
     const onChangeFormValues = (event: React.ChangeEvent<HTMLInputElement>) => {
         setFormValues({...formValues, [event.target.name]: event.target.value});
@@ -75,19 +69,8 @@ const Header: React.FC = () => {
         }, 2000);
     };
 
-    const onLoginModalHandler = async () => {
-        try {
-            setRegistrationLoading(true);
-
-            const response = await axios.post(`${BASE_URL}/auth/login`, {
-                login: formValues.login, password: formValues.password
-            }, {
-                withCredentials: true
-            });
-            
-        } catch (error: any) {
-            registrationHandler('error', `Не верно введены логин или пароль`);
-        }
+    const onLoginModalHandler = () => {
+        dispatch(loginUser(formValues));
     };
 
     const onRegistrationModalHandler = async () => {
@@ -115,21 +98,23 @@ const Header: React.FC = () => {
         }
     };
 
-    const fetchLoginedUser = async () => {
-        try {
-            setFetchUserLoading(true);
-
-            const {data} = await axios.get(`${BASE_URL}/auth/profile`, {withCredentials: true});
-            setLogin(data.login);
-        } catch (e) {
-
-        }
-
+    const fetchLoginedUserHandler = async () => {
+        dispatch(fetchLoginedUser());
     };
 
     useEffect(() => {
-        fetchLoginedUser();
+        fetchLoginedUserHandler();
     }, []);
+
+    useEffect(() => {
+        if(loginLoading === 'fulfilled') {
+            onClose();
+            fetchLoginedUserHandler();
+        }
+        if(loginLoading === 'rejected') {
+            registrationHandler('error', `Не верно введены логин или пароль`);
+        }
+    }, [loginLoading]);
 
     return (
         <Box h='60px' display='flex' justifyContent='space-between' alignItems='center'>
@@ -138,40 +123,45 @@ const Header: React.FC = () => {
                 <Switch size='lg' onChange={toggleColorModeHandler} isChecked={colorMode === 'dark'}/>
                 <Box marginLeft='10px' p='0 5px'>
 
-                    {/* <Spinner />       */}
+                    {fetchUserLoading === "pending" ? 
+                        <Spinner /> :
+                        <>
+                            {fetchUserLoading === "rejected" ?
+                                <Text cursor='pointer' onClick={onOpen}>
+                                    Login{' '}&rarr;
+                                </Text> : ''
+                            }
+                            {fetchUserLoading === "fulfilled" ?
+                                <Box display='flex' alignItems='center' gap='5px'>
+                                    <Text>{userName}</Text>
+                                    <Box position='relative'>
+                                        <Center
+                                            w='24px'
+                                            h='24px'
+                                            cursor='pointer'
+                                            transform={ showLogoutPopover ? 'rotate(180deg)' : 'none'}
+                                            onClick={() => setShowLogoutPopoverHandler(true)}
+                                        >
+                                            <svg width="14" height="10" viewBox="0 0 14 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path
+                                                    d="M1 1L7 8L13 1"
+                                                    stroke={colorMode === 'dark' ? 'var(--chakra-colors-gray-100)' : 'var(--chakra-colors-gray-700)'}
+                                                    strokeWidth="1"
+                                                />
+                                            </svg>
+                                        </Center>
+                                        {showLogoutPopover ?
+                                            <LogoutPopover setShowLogoutPopoverHandler={setShowLogoutPopoverHandler} /> : ''
+                                        }
+                                    </Box>
+                                    <Box rounded='full' w='45px' h='45px' bg='gray.300'></Box>
+                                </Box>
+                                :
+                                ''
+                            }
+                        </>
+                    }       
 
-                    {login ? 
-                        <Box display='flex' alignItems='center' gap='5px'>
-                            <Text>{login}</Text>
-                            <Box position='relative'>
-                                <Center
-                                    w='24px'
-                                    h='24px'
-                                    cursor='pointer'
-                                    transform={ showLogoutPopover ? 'rotate(180deg)' : 'none'}
-                                    onClick={() => setShowLogoutPopoverHandler(true)}
-                                >
-                                    <svg width="14" height="10" viewBox="0 0 14 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            d="M1 1L7 8L13 1"
-                                            stroke={colorMode === 'dark' ? 'var(--chakra-colors-gray-100)' : 'var(--chakra-colors-gray-700)'}
-                                            strokeWidth="1"
-                                        />
-                                    </svg>
-                                </Center>
-                                {showLogoutPopover ?
-                                    <LogoutPopover setShowLogoutPopoverHandler={setShowLogoutPopoverHandler} /> : ''
-                                }
-                                
-                            </Box>
-
-                            <Box rounded='full' w='45px' h='45px' bg='gray.300'></Box>
-                        </Box>
-                        :
-                        <Text cursor='pointer' onClick={onOpen}>
-                            Login{' '}&rarr;
-                        </Text>
-                    }
                 </Box>
             </Box>
             <IntroModal
@@ -184,6 +174,7 @@ const Header: React.FC = () => {
                 onChangeFormValuesHandler={onChangeFormValuesHandler}
                 formErrors={formErrors}
                 registrationLoading={registrationLoading}
+                loginLoading={loginLoading}
                 statusMessage={statusMessage}
             />
         </Box>

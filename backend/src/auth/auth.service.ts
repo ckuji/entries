@@ -32,4 +32,12 @@ export class AuthService {
             throw new UnauthorizedException();
         }
     }
+
+    async logout(res: Response) : Promise<any> {
+        res.cookie('accesToken', '', {httpOnly: true, secure: false, maxAge: 0});
+
+        return {
+            message: 'logout success',
+        };
+    }
 }

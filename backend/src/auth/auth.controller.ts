@@ -14,6 +14,12 @@ export class AuthController {
     return this.authService.signIn(signInDto.login, signInDto.password, res);
   }
 
+  @HttpCode(HttpStatus.OK)
+  @Get('logout')
+  signOut(@Res({ passthrough: true }) res: Response) {
+    return this.authService.logout(res);
+  }
+
   @UseGuards(AuthGuard)
   @Get('profile')
   getProfile(@Request() req: any) {

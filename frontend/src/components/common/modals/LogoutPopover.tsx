@@ -1,5 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { Box } from "@chakra-ui/react";
+import { useAppDispatch } from "../../../hooks";
+import { logoutUser } from "../../../state/slices/base";
 
 type LogoutPopoverProps = {
     setShowLogoutPopoverHandler: (value: boolean) => void
@@ -9,6 +11,7 @@ const LogoutPopover: React.FC<LogoutPopoverProps> = ({
     setShowLogoutPopoverHandler
 }) => {
     const popoverRef = useRef();
+    const dispatch = useAppDispatch();
 
     const outsideClickHandler = (e: MouseEvent) => {
         const path = e.composedPath && e.composedPath();
@@ -30,6 +33,10 @@ const LogoutPopover: React.FC<LogoutPopoverProps> = ({
 
     }, []);
 
+    const logoutHandler = async () => {
+        dispatch(logoutUser());
+    };
+
     return (
         <Box
             //@ts-ignore
@@ -37,10 +44,17 @@ const LogoutPopover: React.FC<LogoutPopoverProps> = ({
             position='absolute'
             top='30px'
             right='0'
-            border='1px solid #fff'
-            padding='10px 20px'
+            borderWidth='1px'
+            borderStyle='solid'
+            borderColor='gray.300'
+            bg='gray.100'
+            _dark={{
+                borderColor: 'gray.600',
+                bg:'gray.700'
+            }}
+            padding='8px 20px'
         >
-            <Box>Выйти</Box>
+            <Box cursor='pointer' onClick={logoutHandler}>Выйти</Box>
         </Box>
     );
 };
