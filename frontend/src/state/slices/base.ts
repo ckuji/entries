@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import type { PayloadAction } from '@reduxjs/toolkit';
 import { BASE_URL } from '../../constants';
 import axios from 'axios';
 import { UserFields } from '../../types/base';
@@ -9,7 +8,8 @@ export interface BaseState {
     loginLoading: string,
     logoutLoading: string,
     fetchUserLoading: string,
-    userName: string
+    userName: string,
+    logouted: boolean,
 };
 
 const initialState: BaseState = {
@@ -17,7 +17,8 @@ const initialState: BaseState = {
     loginLoading: 'idle',
     logoutLoading: 'idle',
     fetchUserLoading: 'idle',
-    userName: ''
+    userName: '',
+    logouted: false,
 };
 
 export const fetchLoginedUser = createAsyncThunk(
@@ -50,14 +51,10 @@ export const baseSlice = createSlice({
     name: 'base',
     initialState,
     reducers: {
-        increment: (state) => {
-            state.value += 1
-        },
-        decrement: (state) => {
-            state.value -= 1
-        },
-        incrementByAmount: (state, action: PayloadAction<number>) => {
-            state.value += action.payload
+        resetUser: (state) => {
+            state.logouted = true;
+            state.fetchUserLoading = 'idle';
+            state.userName = '';
         },
     },
     extraReducers: (builder) => {
@@ -75,6 +72,9 @@ export const baseSlice = createSlice({
         });
         builder.addCase(logoutUser.fulfilled, (state) => {
             state.logoutLoading = 'fulfilled';
+            state.logouted = true;
+            state.fetchUserLoading = 'idle';
+            state.userName = '';
         });
         builder.addCase(fetchLoginedUser.pending, (state) => {
             state.fetchUserLoading = 'pending';
@@ -89,6 +89,6 @@ export const baseSlice = createSlice({
     },
 });
 
-export const { increment, decrement, incrementByAmount } = baseSlice.actions;
+export const { resetUser } = baseSlice.actions;
 
 export default baseSlice.reducer;

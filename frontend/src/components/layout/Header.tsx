@@ -17,7 +17,6 @@ import { fetchLoginedUser, loginUser } from "../../state/slices/base";
 
 const Header: React.FC = () => {
     const { colorMode, toggleColorMode } = useColorMode();
-    // const login = useAppSelector(state => state.base.userName);
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [isLoginModal, setIsLoginModal] = useState(true);
     const dispatch = useAppDispatch();
@@ -30,8 +29,7 @@ const Header: React.FC = () => {
         status: '', message: ''
     });
     const [showLogoutPopover, setShowLogoutPopover] = useState<boolean>(false);
-    // const loginLoading: string = useAppSelector(state => state.base.loginLoading);
-    const {fetchUserLoading, loginLoading, userName} = useAppSelector(state => state.base);
+    const {fetchUserLoading, loginLoading, userName, logouted} = useAppSelector(state => state.base);
 
     const onChangeFormValues = (event: React.ChangeEvent<HTMLInputElement>) => {
         setFormValues({...formValues, [event.target.name]: event.target.value});
@@ -122,17 +120,17 @@ const Header: React.FC = () => {
             <Box display='flex' alignItems='center'>
                 <Switch size='lg' onChange={toggleColorModeHandler} isChecked={colorMode === 'dark'}/>
                 <Box marginLeft='10px' p='0 5px'>
-
                     {fetchUserLoading === "pending" ? 
                         <Spinner /> :
                         <>
-                            {fetchUserLoading === "rejected" ?
-                                <Text cursor='pointer' onClick={onOpen}>
-                                    Login{' '}&rarr;
-                                </Text> : ''
-                            }
-                            {fetchUserLoading === "fulfilled" ?
-                                <Box display='flex' alignItems='center' gap='5px'>
+                            {   
+                                fetchUserLoading === "rejected" || (fetchUserLoading === "idle" && logouted) ?
+                                    <Text cursor='pointer' onClick={onOpen}>
+                                        Login{' '}&rarr;
+                                    </Text>
+                                :
+                                fetchUserLoading === "fulfilled" ?
+                                    <Box display='flex' alignItems='center' gap='5px'>
                                     <Text>{userName}</Text>
                                     <Box position='relative'>
                                         <Center
@@ -161,7 +159,6 @@ const Header: React.FC = () => {
                             }
                         </>
                     }       
-
                 </Box>
             </Box>
             <IntroModal
