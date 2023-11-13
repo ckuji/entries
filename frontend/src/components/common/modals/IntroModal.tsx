@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
     Modal,
     ModalOverlay,
@@ -156,4 +156,4 @@ const IntroModal: React.FC<IntroModalProps> = ({
     )
 }
 
-export default IntroModal;
+export default React.memo(IntroModal);
