@@ -5,7 +5,7 @@ import {
     useColorMode,
     Center,
 } from "@chakra-ui/react";
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import { useDisclosure, Spinner } from '@chakra-ui/react';
 import IntroModal from "../common/modals/IntroModal";
 import axios from "axios";
@@ -33,24 +33,24 @@ const Header: React.FC = () => {
 
     const onChangeFormValues = (event: React.ChangeEvent<HTMLInputElement>) => {
         setFormValues({...formValues, [event.target.name]: event.target.value});
-    };
+    }
 
-    const onChangeFormValuesHandler = useCallback((event: React.ChangeEvent<HTMLInputElement>, field: string) => {
+    const onChangeFormValuesHandler = (event: React.ChangeEvent<HTMLInputElement>, field: string) => {
         onChangeFormValues(event);
         delete formErrors[field];
-    }, []);
+    }
 
     const toggleColorModeHandler = () => {
         toggleColorMode();
-    };
+    }
 
-    const setIsLoginModalHandler = useCallback(() => {
+    const setIsLoginModalHandler = () => {
         if(!isLoginModal) {
             setFormErrors({});
         }
         setIsLoginModal(!isLoginModal);
         setFormValues({login: '', email: '', password: ''});
-    }, []);
+    }
 
     const setShowLogoutPopoverHandler = (value: boolean) => {
         setShowLogoutPopover(value);
@@ -65,13 +65,13 @@ const Header: React.FC = () => {
             }
             setRegistrationLoading(false);
         }, 2000);
-    };
+    }
 
-    const onLoginModalHandler = useCallback(() => {
+    const onLoginModalHandler = () => {
         dispatch(loginUser(formValues));
-    }, []);
+    }
 
-    const onRegistrationModalHandler = useCallback(async () => {
+    const onRegistrationModalHandler = async () => {
         try {
             setRegistrationLoading(true);
             
@@ -94,11 +94,11 @@ const Header: React.FC = () => {
             setFormErrors(formErrorsHelper);
             setRegistrationLoading(false);
         }
-    }, []);
+    }
 
     const fetchLoginedUserHandler = async () => {
         dispatch(fetchLoginedUser());
-    };
+    }
 
     useEffect(() => {
         fetchLoginedUserHandler();

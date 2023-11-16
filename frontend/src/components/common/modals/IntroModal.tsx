@@ -156,4 +156,4 @@ const IntroModal: React.FC<IntroModalProps> = ({
     )
 }
 
-export default React.memo(IntroModal);
+export default IntroModal;
