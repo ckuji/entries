@@ -30,7 +30,7 @@ type IntroModalProps = {
     onChangeFormValuesHandler: (event: React.ChangeEvent<HTMLInputElement>, field: string) => void,
     formErrors: FormErrorsKeyArray,
     registrationLoading: boolean,
-    loginLoading: string,
+    loginLoading: boolean,
     statusMessage: StatusMessageConstuction
 }
 
@@ -137,7 +137,7 @@ const IntroModal: React.FC<IntroModalProps> = ({
                     <Button
                         variant='fill'
                         colorScheme={colorMode === 'light' ? 'cyan' : 'teal'}
-                        isDisabled={registrationLoading || loginLoading === 'pending'}
+                        isDisabled={registrationLoading || loginLoading}
                         onClick={onConfirm} mr='15px'
                     >
                         {isLoginModal ? 'Войти' : 'Зарегистрироваться'}
@@ -145,7 +145,7 @@ const IntroModal: React.FC<IntroModalProps> = ({
                     <Button
                         variant='outline'
                         colorScheme={colorMode === 'light' ? 'cyan' : 'teal'}
-                        isDisabled={registrationLoading || loginLoading === 'pending'}
+                        isDisabled={registrationLoading || loginLoading}
                         onClick={setIsLoginModalHandler}
                     >
                         Перейти {isLoginModal ? 'к регистрации' : 'ко входу'}

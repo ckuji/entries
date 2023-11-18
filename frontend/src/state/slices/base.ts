@@ -1,11 +1,9 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { BASE_URL } from '../../constants';
 import axios from 'axios';
-import { UserFields } from '../../types/base';
 
 export interface BaseState {
     value: number,
-    loginLoading: string,
     logoutLoading: string,
     fetchUserLoading: string,
     userName: string,
@@ -14,7 +12,6 @@ export interface BaseState {
 
 const initialState: BaseState = {
     value: 0,
-    loginLoading: 'idle',
     logoutLoading: 'idle',
     fetchUserLoading: 'idle',
     userName: '',
@@ -28,16 +25,6 @@ export const fetchLoginedUser = createAsyncThunk(
         return data.login;
     }
 );
-
-export const loginUser = createAsyncThunk(
-    'users/loginUser',
-    async (userData: UserFields) => {
-        const response = await axios.post(`${BASE_URL}/auth/login`, {
-            login: userData.login, password: userData.password
-        }, { withCredentials: true });
-        return response.data;
-    }
-)
 
 export const logoutUser = createAsyncThunk(
     'users/logoutUser',
@@ -58,15 +45,6 @@ export const baseSlice = createSlice({
         },
     },
     extraReducers: (builder) => {
-        builder.addCase(loginUser.pending, (state) => {
-            state.loginLoading = 'pending';
-        });
-        builder.addCase(loginUser.fulfilled, (state) => {
-            state.loginLoading = 'fulfilled';
-        });
-        builder.addCase(loginUser.rejected, (state) => {
-            state.loginLoading = 'rejected';
-        });
         builder.addCase(logoutUser.pending, (state) => {
             state.logoutLoading = 'pending';
         });

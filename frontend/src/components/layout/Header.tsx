@@ -13,7 +13,7 @@ import { BASE_URL } from "../../constants";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { FormErrorsKeyArray, StatusMessageConstuction, UserFields, UserValidationError } from "../../types/base";
 import LogoutPopover from "../common/modals/LogoutPopover";
-import { fetchLoginedUser, loginUser } from "../../state/slices/base";
+import { fetchLoginedUser} from "../../state/slices/base";
 
 const Header: React.FC = () => {
     const { colorMode, toggleColorMode } = useColorMode();
@@ -24,12 +24,13 @@ const Header: React.FC = () => {
         login: '', email: '', password: ''
     });
     const [formErrors, setFormErrors] = useState<FormErrorsKeyArray>({});
+    const [loginLoading, setLoginLoading] = useState<boolean>(false);
     const [registrationLoading, setRegistrationLoading] = useState<boolean>(false);
     const [statusMessage, setStatusMessage] = useState<StatusMessageConstuction>({
         status: '', message: ''
     });
     const [showLogoutPopover, setShowLogoutPopover] = useState<boolean>(false);
-    const {fetchUserLoading, loginLoading, userName, logouted} = useAppSelector(state => state.base);
+    const {fetchUserLoading, userName, logouted} = useAppSelector(state => state.base);
 
     const onChangeFormValues = (event: React.ChangeEvent<HTMLInputElement>) => {
         setFormValues({...formValues, [event.target.name]: event.target.value});
@@ -56,19 +57,36 @@ const Header: React.FC = () => {
         setShowLogoutPopover(value);
     }
 
-    const registrationHandler = (status: string, message: string) => {
+    const confirmHandler = (status: string, message: string, setIsNotLoading: () => void) => {
         setStatusMessage({status, message});
         setTimeout(() => {
             setStatusMessage({status: '', message: ''});
             if(status === 'success') {
                 setIsLoginModalHandler();
             }
-            setRegistrationLoading(false);
+            setIsNotLoading();
         }, 2000);
     }
 
-    const onLoginModalHandler = () => {
-        dispatch(loginUser(formValues));
+    const onLoginModalHandler = async () => {
+        try {
+            setLoginLoading(true);
+
+            const response = await axios.post(`${BASE_URL}/auth/login`, {
+                login: formValues.login, password: formValues.password
+            }, { withCredentials: true });
+
+            if(response.data.message === 'success') {
+                onClose();
+                fetchLoginedUserHandler();
+            }
+        } catch (e: any) {
+            if(e.response?.status === 401 ) {
+                confirmHandler('error', `Не верно введены логин или пароль`, () => setLoginLoading(false));
+                return;
+            }
+            confirmHandler('error', `Что-то пошло не так`, () => setLoginLoading(false));
+        }
     }
 
     const onRegistrationModalHandler = async () => {
@@ -78,21 +96,25 @@ const Header: React.FC = () => {
             const response = await axios.post(`${BASE_URL}/user`, {
               login: formValues.login, password: formValues.password, email: formValues.email
             });
-            registrationHandler('success', `Пользователь ${response.data.login} успешно создан`);
-
+            confirmHandler('success', `Пользователь ${response.data.login} успешно создан`, () => setRegistrationLoading(false));
         } catch (error: any) {
-            if(error.response.data.statusCode === 409) {
-                registrationHandler('exist', error.response.data.message);
+            if(error.response?.data.statusCode === 409) {
+                confirmHandler('exist', error.response.data.message, () => setRegistrationLoading(false));
+                return;
+            }
+            if(error.response) {
+                let formErrorsHelper: FormErrorsKeyArray = {};
+
+                error.response.data.message.map((item: UserValidationError) => {
+                    formErrorsHelper[item.property] = Object.values(item.constraints);
+                });
+                setFormErrors(formErrorsHelper);
+                setRegistrationLoading(false);
+
                 return;
             }
 
-            let formErrorsHelper: FormErrorsKeyArray = {};
-
-            error.response.data.message.map((item: UserValidationError) => {
-                formErrorsHelper[item.property] = Object.values(item.constraints);
-            });
-            setFormErrors(formErrorsHelper);
-            setRegistrationLoading(false);
+            confirmHandler('error', `Что-то пошло не так`, () => setRegistrationLoading(false));
         }
     }
 
@@ -103,16 +125,6 @@ const Header: React.FC = () => {
     useEffect(() => {
         fetchLoginedUserHandler();
     }, []);
-
-    useEffect(() => {
-        if(loginLoading === 'fulfilled') {
-            onClose();
-            fetchLoginedUserHandler();
-        }
-        if(loginLoading === 'rejected') {
-            registrationHandler('error', `Не верно введены логин или пароль`);
-        }
-    }, [loginLoading]);
 
     return (
         <Box h='60px' display='flex' justifyContent='space-between' alignItems='center'>
