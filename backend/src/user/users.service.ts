@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { User } from "./user.entity";
+import { UserEntity } from "./user.entity";
 import { Repository } from "typeorm";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
@@ -8,13 +8,13 @@ const bcrypt = require('bcryptjs');
 
 @Injectable()
 export class UsersService {
-    constructor(@InjectRepository(User) private usersRepository: Repository<User>) {}
+    constructor(@InjectRepository(UserEntity) private usersRepository: Repository<UserEntity>) {}
 
-    getAll = async () : Promise<User[]> => {
+    getAll = async () : Promise<UserEntity[]> => {
         return await this.usersRepository.find();
     }
 
-    getOneById = async (id: string) : Promise<User | null> => {
+    getOneById = async (id: string) : Promise<UserEntity | null> => {
         return await this.usersRepository.findOne({
             where: {
                 id: +id
@@ -22,7 +22,39 @@ export class UsersService {
         });
     }
 
-    getOneByLogin = async (login: string) : Promise<User | null> => {
+    getOneByIdWithProfile = async (id: string, req: any) : Promise<UserEntity | null> => {
+        const user = await this.usersRepository.findOne({
+            where: {
+                id: +id
+            },
+            relations: {
+                profile: true
+            },
+            select: {
+                id: true,
+                login: true,
+                profile: {
+                    id: true,
+                    description: true
+                },
+            }
+        });
+
+        if(!user) {
+            throw new HttpException('Пользователь не найден', HttpStatus.NOT_FOUND);
+        }
+
+        let newUser: any = {...user}
+        if(req.user.sub === +id) {
+            newUser.owner = true 
+        } else {
+            newUser.owner = false 
+        }
+
+        return newUser;
+    }
+
+    getOneByLogin = async (login: string) : Promise<UserEntity | null> => {
         return await this.usersRepository.findOne({
             where: {
                 login
@@ -30,7 +62,7 @@ export class UsersService {
         });
     }
 
-    getOneByEmail = async (email: string) : Promise<User | null> => {
+    getOneByEmail = async (email: string) : Promise<UserEntity | null> => {
         return await this.usersRepository.findOne({
             where: {
                 email
@@ -55,8 +87,8 @@ export class UsersService {
         return newUserWithoutPassword;
     }
 
-    updateOne = async (id: string, dto: UpdateUserDto) : Promise<User | null> => {
-        const user: User | null = await this.getOneById(id);
+    updateOne = async (id: string, dto: UpdateUserDto) : Promise<UserEntity | null> => {
+        const user: UserEntity | null = await this.getOneById(id);
         if(user) {
             user.login = dto.login;
             user.password = dto.password;

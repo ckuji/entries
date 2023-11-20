@@ -2,7 +2,6 @@ import React from "react";
 import { Box, Container } from "@chakra-ui/react";
 import Header from "./Header";
 import Footer from "./Footer";
-import Sidebar from "./Sidebar";
 
 type MainLayoutProps = {
     children: React.ReactNode
@@ -22,10 +21,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({children}) => {
                     borderTopColor: 'gray.600'
                 }}
             >
-                <Sidebar />
-                <Box>
-                    {children}
-                </Box>
+                {children}
             </Box>
             <Footer />
         </Container>

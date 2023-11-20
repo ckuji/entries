@@ -3,12 +3,14 @@ import { mode } from '@chakra-ui/theme-tools';
 import { buttonTheme } from './components/Button';
 import { modalTheme } from './components/Modal';
 import { inputTheme } from './components/Input';
+import { textareaTheme } from './components/Textarea';
 
 const theme = extendTheme({
     components: {
         Button: buttonTheme,
         Modal: modalTheme,
-        Input: inputTheme
+        Input: inputTheme,
+        Textarea: textareaTheme
     },
     styles: {
         global: (props) => ({

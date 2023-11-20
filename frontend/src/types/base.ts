@@ -17,3 +17,10 @@ export type StatusMessageConstuction = {
     status: string,
     message: string
 }
+
+export interface BaseState {
+    logoutLoading: string,
+    fetchUserLoading: string,
+    logouted: boolean,
+    userName: string
+};

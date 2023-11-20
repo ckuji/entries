@@ -18,12 +18,9 @@ export class CreateUserDto {
     @MaxLength(30, {
         message: 'Пароль должен быть не больше 30 символов'
     })
-    // @IsStrongPassword({
-    //     minLowercase: 1,
-    //     minNumbers: 1,
-    // }, {
-    //     message: 'Пароль должен содержать минимум одну букву в нижнем регистре и одну цифру'
-    // })
+    @Matches(/(?=.*[a-z])(?=.*[A-Z])/g, {
+        message: 'Минимум одна буква в нижнем регистре и одна в верхнем'
+    })
     password: string
     
     @IsEmail({}, {

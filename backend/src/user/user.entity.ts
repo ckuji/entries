@@ -1,10 +1,9 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { ProfileEntity } from 'src/profile/profile.entity';
+import { Base } from 'src/utils/base';
+import { Entity, Column, PrimaryGeneratedColumn, OneToOne } from 'typeorm';
 
 @Entity()
-export class User {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class UserEntity extends Base {
   @Column()
   login: string;
 
@@ -13,4 +12,7 @@ export class User {
 
   @Column()
   email: string;
+
+  @OneToOne(() => ProfileEntity, profile => profile.user)
+  profile: ProfileEntity
 }

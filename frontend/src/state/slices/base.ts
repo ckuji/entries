@@ -1,33 +1,25 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { BASE_URL } from '../../constants';
 import axios from 'axios';
-
-export interface BaseState {
-    value: number,
-    logoutLoading: string,
-    fetchUserLoading: string,
-    userName: string,
-    logouted: boolean,
-};
+import { BaseState } from '../../types/base';
 
 const initialState: BaseState = {
-    value: 0,
     logoutLoading: 'idle',
     fetchUserLoading: 'idle',
-    userName: '',
     logouted: false,
+    userName: ''
 };
 
 export const fetchLoginedUser = createAsyncThunk(
-    'users/fetchLoginedUser',
+    'base/fetchLoginedUser',
     async () => {
-        const { data } = await axios.get(`${BASE_URL}/auth/profile`, {withCredentials: true});
-        return data.login;
+        const response = await axios.get(`${BASE_URL}/auth/profile`, {withCredentials: true});
+        return response.data.login;
     }
 );
 
 export const logoutUser = createAsyncThunk(
-    'users/logoutUser',
+    'base/logoutUser',
     async () => {
         const response = await axios.get(`${BASE_URL}/auth/logout`, {withCredentials: true});
         return response.data;
@@ -38,11 +30,11 @@ export const baseSlice = createSlice({
     name: 'base',
     initialState,
     reducers: {
-        resetUser: (state) => {
-            state.logouted = true;
-            state.fetchUserLoading = 'idle';
-            state.userName = '';
-        },
+        // resetUser: (state) => {
+        //     state.logouted = true;
+        //     state.fetchUserLoading = 'idle';
+        //     state.userName = '';
+        // },
     },
     extraReducers: (builder) => {
         builder.addCase(logoutUser.pending, (state) => {
@@ -67,6 +59,8 @@ export const baseSlice = createSlice({
     },
 });
 
-export const { resetUser } = baseSlice.actions;
+export const { 
+    // resetUser
+} = baseSlice.actions;
 
 export default baseSlice.reducer;
