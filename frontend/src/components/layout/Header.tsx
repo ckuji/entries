@@ -15,6 +15,7 @@ import { useAppDispatch, useAppSelector } from "../../hooks";
 import { FormErrorsKeyArray, StatusMessageConstuction, UserFields, UserValidationError } from "../../types/base";
 import LogoutPopover from "../common/modals/LogoutPopover";
 import { fetchLoginedUser} from "../../state/slices/base";
+import { fetchUser } from "../../state/slices/user";
 
 const Header: React.FC = () => {
     const { colorMode, toggleColorMode } = useColorMode();
@@ -32,6 +33,7 @@ const Header: React.FC = () => {
     });
     const [showLogoutPopover, setShowLogoutPopover] = useState<boolean>(false);
     const {fetchUserLoading, userName, logouted} = useAppSelector(state => state.base);
+    const { userRouterId } = useAppSelector((state) => state.user);
 
     const onChangeFormValues = (event: React.ChangeEvent<HTMLInputElement>) => {
         setFormValues({...formValues, [event.target.name]: event.target.value});
@@ -82,6 +84,7 @@ const Header: React.FC = () => {
                 onClose();
                 setLoginLoading(false);
                 fetchLoginedUserHandler();
+                setFormValues({login: '', email: '', password: ''});
             }
         } catch (e: any) {
             if(e.response?.status === 401 ) {
@@ -123,6 +126,9 @@ const Header: React.FC = () => {
 
     const fetchLoginedUserHandler = async () => {
         dispatch(fetchLoginedUser());
+        if(userRouterId) {
+            dispatch(fetchUser(userRouterId));
+        }
     }
 
     useEffect(() => {

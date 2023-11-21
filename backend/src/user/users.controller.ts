@@ -4,6 +4,7 @@ import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { ValidationPipe } from "./pipes/validation.pipe";
 import { AuthGuard } from "src/auth/auth.guard";
+import { OwnerGuard } from "src/auth/owner.guard";
 
 @Controller('user')
 export class UsersController {
@@ -15,7 +16,7 @@ export class UsersController {
         return this.usersService.getAll();
     }
 
-    @UseGuards(AuthGuard)
+    @UseGuards(OwnerGuard)
     @Get(':id')
     async getByIdWithProfile(@Param('id') id: string, @Request() req: any) {
         return this.usersService.getOneByIdWithProfile(id, req);

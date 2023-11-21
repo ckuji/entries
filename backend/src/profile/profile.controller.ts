@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Get, UseGuards, Param } from "@nestjs/common";
+import { Body, Controller, Post, Get, UseGuards, Param, Req, Put } from "@nestjs/common";
 import { ProfileService } from "./profile.service";
 import { AuthGuard } from "src/auth/auth.guard";
 import { CreateProfileDto } from "./dto/create-profile.dto";
@@ -8,14 +8,14 @@ export class ProfileController {
     constructor(private readonly profileService: ProfileService) {}
 
     @UseGuards(AuthGuard)
-    @Get(':id')
-    getProfile(@Param('id') id: string) {
-        return this.profileService.getOneByUserId(+id)
+    @Post()
+    async create(@Body() dto: CreateProfileDto, @Req() req: any) {
+        return this.profileService.createOne(dto.text, +dto.userId, req.user.sub);
     }
 
     @UseGuards(AuthGuard)
-    @Post()
-    async create(@Body() dto: CreateProfileDto) {
-        return this.profileService.createOne(dto.text, dto.userId);
+    @Put()
+    async update(@Body() dto: CreateProfileDto, @Req() req: any) {
+        return this.profileService.updateOne(dto.text, +dto.userId, req.user.sub);
     }
 }
