@@ -1,14 +1,38 @@
 import React, { useEffect } from "react";
 import { useRouter } from 'next/router';
-import { Box, Spinner } from '@chakra-ui/react';
+import { Box, Spinner, Switch } from '@chakra-ui/react';
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import { fetchUser, setUserRouterId } from "../../state/slices/user";
+import { 
+    fetchUser,
+    setUserRouterId,
+    setEditablePage,
+    setEditableDescription,
+    setEditableLinks
+} from "../../state/slices/user";
 import Description from "./Description";
+import Links from "./links";
 
 const UserContent: React.FC = () => {
-    const { fetchUserLoading, userData } = useAppSelector((state) => state.user);
+    const { 
+        fetchUserLoading,
+        userData,
+        editablePage,
+        editableDescription,
+        editableLinks
+    } = useAppSelector((state) => state.user);
     const dispatch = useAppDispatch();
     const router: any = useRouter();
+
+    const onChangeEditPageHandler = () => {
+        dispatch(setEditablePage(!editablePage));
+        if(editableDescription) {
+            dispatch(setEditableDescription(!editableDescription));
+        }
+
+        if(editableLinks) {
+            dispatch(setEditableLinks(!editableLinks));
+        }
+    }
 
     useEffect(() => {
         if(router.query.id) {
@@ -25,9 +49,19 @@ const UserContent: React.FC = () => {
                 fetchUserLoading === 'rejected' ?
                 <Box>Пользователь не найден</Box> :
                 <Box>
+                    {userData.owner ?
+                        <Box
+                            display='flex'
+                            justifyContent='flex-end'
+                            p='10px 0'
+                        >
+                            <Box mr='10px'>Редактировать страницу</Box>
+                            <Switch size='lg' onChange={onChangeEditPageHandler} isChecked={editablePage}/>
+                        </Box> : ''
+                    }
                     <Description userId={router.query.id} />
-                    <Box mt='30px'>Ссылки</Box>
-                    <Box>Знания</Box>
+                    <Links userId={router.query.id} />
+                    <Box mt='30px'>Знания</Box>
                 </Box>
             }
         </Box>

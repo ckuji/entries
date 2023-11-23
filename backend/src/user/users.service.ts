@@ -11,7 +11,12 @@ export class UsersService {
     constructor(@InjectRepository(UserEntity) private usersRepository: Repository<UserEntity>) {}
 
     getAll = async () : Promise<UserEntity[]> => {
-        return await this.usersRepository.find();
+        return await this.usersRepository.find({
+            relations: {
+                profile: true,
+                links: true
+            }
+        });
     }
 
     getOneById = async (id: string) : Promise<UserEntity | null> => {
@@ -28,7 +33,8 @@ export class UsersService {
                 id: +id
             },
             relations: {
-                profile: true
+                profile: true,
+                links: true
             },
             select: {
                 id: true,
@@ -87,7 +93,11 @@ export class UsersService {
         return newUserWithoutPassword;
     }
 
-    updateOne = async (id: string, dto: UpdateUserDto) : Promise<UserEntity | null> => {
+    updateOne = async (id: string, dto: UpdateUserDto, loginedId: number) : Promise<UserEntity | null> => {
+        if(+id !== loginedId) {
+            throw new HttpException('Изменять профиль может только владелец', HttpStatus.FORBIDDEN);
+        }
+
         const user: UserEntity | null = await this.getOneById(id);
         if(user) {
             user.login = dto.login;
@@ -99,7 +109,11 @@ export class UsersService {
         return null;
     }
     
-    deleteOne = async (id: string) => {
+    deleteOne = async (id: string, loginedId: number) => {
+        if(+id !== loginedId) {
+            throw new HttpException('Недостаточно прав', HttpStatus.FORBIDDEN);
+        }
+
         return await this.usersRepository.delete(id);
     }
 }

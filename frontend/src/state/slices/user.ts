@@ -1,11 +1,12 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { BASE_URL } from '../../constants';
 import axios from 'axios';
-import { DescriptionData, UserState } from '../../types/user';
+import { DescriptionData, LinkWithUserId, UserState } from '../../types/user';
 
 const initialState: UserState = {
     fetchUserLoading: 'idle',
     changeDescriptionLoading: 'idle',
+    createLinkLoading: 'idle',
     userData: {
         id: 0,
         login: '',
@@ -14,11 +15,13 @@ const initialState: UserState = {
             description: '',
             initialDescription: ''
         },
-        emptyInitialProfile: false
+        emptyInitialProfile: false,
+        links: [],
     },
-    editableProfile: false,
+    editablePage: false,
     editableDescription: false,
-    userRouterId: null
+    userRouterId: null,
+    editableLinks: false,
 };
 
 export const fetchUser = createAsyncThunk(
@@ -67,12 +70,26 @@ export const updateDescription = createAsyncThunk(
     }
 );
 
+export const createLinkAndUpdateLinks = createAsyncThunk(
+    'user/createLink',
+    async (newLink: LinkWithUserId) => {
+        await axios.post(`${BASE_URL}/link`, {
+            userId: newLink.userId,
+            linkBase: newLink.linkBase,
+            description: newLink.description
+        }, {withCredentials: true});
+
+        const response = await axios.get(`${BASE_URL}/link/${newLink.userId}`, {withCredentials: true});
+        return response.data;
+    }
+);
+
 export const userSlice = createSlice({
     name: 'user',
     initialState,
     reducers: {
-        setEditableProfile: (state, action) => {
-            state.editableProfile = action.payload;
+        setEditablePage: (state, action) => {
+            state.editablePage = action.payload;
         },
         setEditableDescription: (state, action) => {
             state.editableDescription = action.payload;
@@ -85,7 +102,10 @@ export const userSlice = createSlice({
         },
         resetUserOwnerField: (state) => {
             state.userData.owner = false;
-        }
+        },
+        setEditableLinks: (state, action) => {
+            state.editableLinks = action.payload;
+        },
     },
     extraReducers: (builder) => {
         builder.addCase(fetchUser.pending, (state) => {
@@ -121,15 +141,26 @@ export const userSlice = createSlice({
         builder.addCase(updateDescription.rejected, (state) => {
             state.changeDescriptionLoading = 'rejected';
         });
+        builder.addCase(createLinkAndUpdateLinks.pending, (state) => {
+            state.createLinkLoading = 'pending';
+        });
+        builder.addCase(createLinkAndUpdateLinks.fulfilled, (state, action) => {
+            state.createLinkLoading = 'fulfilled';
+            state.userData.links = action.payload;
+        });
+        builder.addCase(createLinkAndUpdateLinks.rejected, (state) => {
+            state.createLinkLoading = 'rejected';
+        });
     },
 });
 
 export const {
-    setEditableProfile,
+    setEditablePage,
     setEditableDescription,
     onChangeProfileDescription,
     setUserRouterId,
-    resetUserOwnerField
+    resetUserOwnerField,
+    setEditableLinks
 } = userSlice.actions;
 
 export default userSlice.reducer;

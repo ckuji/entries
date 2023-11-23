@@ -1,10 +1,12 @@
 export type UserState = {
     fetchUserLoading: string,
     changeDescriptionLoading: string,
+    createLinkLoading: string,
     userData: User,
-    editableProfile: boolean,
+    editablePage: boolean,
     editableDescription: boolean,
-    userRouterId: null | number
+    userRouterId: null | number,
+    editableLinks: boolean
 }
 
 export type User = {
@@ -12,12 +14,22 @@ export type User = {
     login: string,
     owner: boolean,
     profile: Profile,
-    emptyInitialProfile: boolean
+    emptyInitialProfile: boolean,
+    links: Link[]
 }
 
 type Profile = {
     description: string,
     initialDescription: string
+}
+
+export type Link = {
+    linkBase: string,
+    description: string,
+}
+
+export interface LinkWithUserId extends Link {
+    userId: string
 }
 
 export type DescriptionData = {
