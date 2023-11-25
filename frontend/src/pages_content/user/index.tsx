@@ -2,36 +2,17 @@ import React, { useEffect } from "react";
 import { useRouter } from 'next/router';
 import { Box, Spinner, Switch } from '@chakra-ui/react';
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import { 
-    fetchUser,
-    setUserRouterId,
-    setEditablePage,
-    setEditableDescription,
-    setEditableLinks
-} from "../../state/slices/user";
+import { fetchUser, setUserRouterId, setEditablePage } from "../../state/slices/user";
 import Description from "./Description";
 import Links from "./links";
 
 const UserContent: React.FC = () => {
-    const { 
-        fetchUserLoading,
-        userData,
-        editablePage,
-        editableDescription,
-        editableLinks
-    } = useAppSelector((state) => state.user);
+    const { fetchUserLoading, userData, editablePage } = useAppSelector((state) => state.user);
     const dispatch = useAppDispatch();
     const router: any = useRouter();
 
     const onChangeEditPageHandler = () => {
         dispatch(setEditablePage(!editablePage));
-        if(editableDescription) {
-            dispatch(setEditableDescription(!editableDescription));
-        }
-
-        if(editableLinks) {
-            dispatch(setEditableLinks(!editableLinks));
-        }
     }
 
     useEffect(() => {

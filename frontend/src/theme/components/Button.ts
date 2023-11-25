@@ -2,6 +2,7 @@ import { defineStyle, defineStyleConfig } from "@chakra-ui/styled-system"
 
 const baseStyle = defineStyle({
     borderRadius: '8px',
+    borderWidth: '1px',
     p: '5px 10px',
     _disabled: {
       opacity: 0.5,
@@ -46,7 +47,7 @@ const fillVariant = defineStyle((props) => {
   };
 });
 
-const outlineVariant = defineStyle((props) => {
+const outlineSimpleVariant = defineStyle((props) => {
   const { colorScheme: c } = props;
   return {
     color: `${c}.600`,
@@ -80,12 +81,51 @@ const outlineVariant = defineStyle((props) => {
   };
 });
 
+const outlineCompleteVariant = defineStyle((props) => {
+  const { colorScheme: c } = props;
+  return {
+    color: `${c}.600`,
+    borderColor: `${c}.600`,
+    _dark: {
+      color: `${c}.600`,
+      borderColor: `${c}.600`
+    },
+    _hover: {
+      color: `${c}.650`,
+      borderColor: `${c}.650`,
+      bg: 'none',
+      _dark: {
+        color:`${c}.650`,
+        borderColor: `${c}.650`
+      },
+      _disabled: {
+        color: `${c}.600`,
+        borderColor: `${c}.600`,
+        _dark: {
+          color: `${c}.600`,
+          borderColor: `${c}.600`
+        },
+      }
+    },
+    _active: {
+      color: `${c}.700`,
+      borderColor: `${c}.700`,
+      bg: 'none',
+      _dark: {
+        color: `${c}.700`,
+        borderColor: `${c}.700`
+      }
+    },
+  };
+});
+
 export const buttonTheme = defineStyleConfig({
   baseStyle,
   sizes,
   variants: {
     fill: fillVariant,
-    outline: outlineVariant
+    outlineSimple: outlineSimpleVariant,
+    outlineComplete: outlineCompleteVariant
   },
   defaultProps: {
     size: 'md',

@@ -1,9 +1,9 @@
-import { Box, Flex, Input } from "@chakra-ui/react";
+import { Box, Text } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import UserElementSettings from "../UserElementSettings";
-import { createLinkAndUpdateLinks, setEditableLinks } from "../../../state/slices/user";
-import { Link } from "../../../types/user";
+import { createLinkAndUpdateLinks, setEditableLinks, setEditedLinksItem } from "../../../state/slices/user";
+import { LinkSample } from "../../../types/user";
 import LinksItem from "./LinksItem";
 import LinkForm from "./LinkForm";
 
@@ -13,17 +13,34 @@ type LinksProps = {
 
 const Links: React.FC<LinksProps> = ({userId}) => {
     const dispatch = useAppDispatch();
-    const { userData, editablePage, editableLinks, createLinkLoading } = useAppSelector((state) => state.user);
+    const { 
+        userData,
+        editablePage,
+        editableLinks,
+        createLinkLoading,
+        editedLinksItem
+    } = useAppSelector((state) => state.user);
     const [successMessage, setSuccessMessage] = useState('');
-    const [newLinkValue, setNewLinkValue] = useState<Link>({
+    const [newLinkValue, setNewLinkValue] = useState<LinkSample>({
         linkBase: '', description: ''
     });
+
+    const onChangeEditLinksItemHandler = (editedLink: number) => {
+        if(editedLink === editedLinksItem) {
+            dispatch(setEditedLinksItem(null));
+        } else {
+            dispatch(setEditedLinksItem(editedLink));
+        }
+    }
 
     const onChangelinkHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         setNewLinkValue({...newLinkValue, [e.target.name]: e.target.value});
     }
 
     const onChangeEditLinksHandler = () => {
+        if(editableLinks) {
+            dispatch(setEditedLinksItem(null));
+        }
         dispatch(setEditableLinks(!editableLinks));
     }
 
@@ -50,13 +67,22 @@ const Links: React.FC<LinksProps> = ({userId}) => {
                     key={`${item.linkBase}_${index}`}
                     linkBase={item.linkBase}
                     description={item.description}
+                    onChangeEditLinksItemHandler={onChangeEditLinksItemHandler}
+                    index={index}
+                    edited={editedLinksItem}
+                    linkId={item.id}
+                    userId={userId}
                 />
             ) || 'Ссылок 0'}
             {editableLinks ?
-                <LinkForm
-                    linkBaseValue={newLinkValue.linkBase}
-                    descriptionValue={newLinkValue.description}
-                    onChangelinkHandler={onChangelinkHandler} />
+                <Box>
+                    <Text>Создать новую ссылку</Text>
+                    <LinkForm
+                        linkBaseValue={newLinkValue.linkBase}
+                        descriptionValue={newLinkValue.description}
+                        onChangelinkHandler={onChangelinkHandler}
+                    />
+                </Box>
                 : ''
             }
             <UserElementSettings

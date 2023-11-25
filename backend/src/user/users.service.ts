@@ -43,6 +43,11 @@ export class UsersService {
                     id: true,
                     description: true
                 },
+            },
+            order: {
+                links: {
+                    id: 'ASC'
+                }
             }
         });
 

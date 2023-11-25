@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { Box } from "@chakra-ui/react";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { logoutUser } from "../../../state/slices/base";
-import { resetUserOwnerField } from "../../../state/slices/user";
+import { resetUserOwnerField, setEditablePage } from "../../../state/slices/user";
 
 type LogoutPopoverProps = {
     setShowLogoutPopoverHandler: (value: boolean) => void
@@ -13,7 +13,7 @@ const LogoutPopover: React.FC<LogoutPopoverProps> = ({
 }) => {
     const popoverRef = useRef();
     const dispatch = useAppDispatch();
-    const userData = useAppSelector((state) => state.user.userData);
+    const { userData, editablePage } = useAppSelector((state) => state.user);
 
     const outsideClickHandler = (e: MouseEvent) => {
         const path = e.composedPath && e.composedPath();
@@ -35,8 +35,11 @@ const LogoutPopover: React.FC<LogoutPopoverProps> = ({
 
     }, []);
 
-    const logoutHandler = () => {
-        dispatch(logoutUser());
+    const logoutHandler = async () => {
+        await dispatch(logoutUser());
+        if(editablePage) {
+            dispatch(setEditablePage(false));
+        }
         if(userData.owner) {
             dispatch(resetUserOwnerField());
         }

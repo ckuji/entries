@@ -37,10 +37,14 @@ const theme = extendTheme({
             900: '#001910'
         },
         teal: {
-            550: '#30888a'
+            550: '#30888a',
+            650: '#2b6a6e'
         },
         gray: {
             350: '#b4bfcf'
+        },
+        orange: {
+            650: '#ad4823'
         }
     },
     fontSizes: {

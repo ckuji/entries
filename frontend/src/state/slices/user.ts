@@ -1,12 +1,14 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { BASE_URL } from '../../constants';
 import axios from 'axios';
-import { DescriptionData, LinkWithUserId, UserState } from '../../types/user';
+import { DescriptionData, LinkAndUserIds, LinkWithUserAndLinkIds, LinkWithUserId, UserState } from '../../types/user';
 
 const initialState: UserState = {
     fetchUserLoading: 'idle',
     changeDescriptionLoading: 'idle',
     createLinkLoading: 'idle',
+    updateLinkLoading: 'idle',
+    deleteLinkLoading: 'idle',
     userData: {
         id: 0,
         login: '',
@@ -22,6 +24,7 @@ const initialState: UserState = {
     editableDescription: false,
     userRouterId: null,
     editableLinks: false,
+    editedLinksItem: null,
 };
 
 export const fetchUser = createAsyncThunk(
@@ -84,12 +87,44 @@ export const createLinkAndUpdateLinks = createAsyncThunk(
     }
 );
 
+export const updateLinksItem = createAsyncThunk(
+    'user/updateLinksItem',
+    async (link: LinkWithUserAndLinkIds) => {
+        const response = await axios.put(`${BASE_URL}/link`, {
+            linkBase: link.linkBase,
+            description: link.description,
+            id: link.id,
+            userId: link.userId
+        }, {withCredentials: true});
+        return response.data;
+    }
+);
+
+export const deleteLinkAndUpdateLinks = createAsyncThunk(
+    'user/deleteLink',
+    async (link: LinkAndUserIds) => {
+        await axios.delete(`${BASE_URL}/link/${link.id}`, {withCredentials: true});
+
+        const response = await axios.get(`${BASE_URL}/link/${link.userId}`, {withCredentials: true});
+        return response.data;
+    }
+);
+
 export const userSlice = createSlice({
     name: 'user',
     initialState,
     reducers: {
         setEditablePage: (state, action) => {
             state.editablePage = action.payload;
+            if(state.editableDescription) {
+                state.editableDescription = !state.editableDescription;
+            }
+            if(state.editableLinks) {
+                state.editableLinks = !state.editableLinks;
+            }
+            if(state.editedLinksItem !== null) {
+                state.editedLinksItem = null;
+            }
         },
         setEditableDescription: (state, action) => {
             state.editableDescription = action.payload;
@@ -106,6 +141,9 @@ export const userSlice = createSlice({
         setEditableLinks: (state, action) => {
             state.editableLinks = action.payload;
         },
+        setEditedLinksItem: (state, action) => {
+            state.editedLinksItem = action.payload
+        }
     },
     extraReducers: (builder) => {
         builder.addCase(fetchUser.pending, (state) => {
@@ -151,6 +189,28 @@ export const userSlice = createSlice({
         builder.addCase(createLinkAndUpdateLinks.rejected, (state) => {
             state.createLinkLoading = 'rejected';
         });
+        builder.addCase(updateLinksItem.pending, (state) => {
+            state.updateLinkLoading = 'pending';
+        });
+        builder.addCase(updateLinksItem.fulfilled, (state, action) => {
+            state.updateLinkLoading = 'fulfilled';
+
+            const links = state.userData.links.map((item) => item.id === action.payload.id ? action.payload : item);
+            state.userData.links = links;
+        });
+        builder.addCase(updateLinksItem.rejected, (state) => {
+            state.updateLinkLoading = 'rejected';
+        });
+        builder.addCase(deleteLinkAndUpdateLinks.pending, (state) => {
+            state.deleteLinkLoading = 'pending';
+        });
+        builder.addCase(deleteLinkAndUpdateLinks.fulfilled, (state, action) => {
+            state.deleteLinkLoading = 'fulfilled';
+            state.userData.links = action.payload;
+        });
+        builder.addCase(deleteLinkAndUpdateLinks.rejected, (state) => {
+            state.deleteLinkLoading = 'rejected';
+        });
     },
 });
 
@@ -160,7 +220,8 @@ export const {
     onChangeProfileDescription,
     setUserRouterId,
     resetUserOwnerField,
-    setEditableLinks
+    setEditableLinks,
+    setEditedLinksItem,
 } = userSlice.actions;
 
 export default userSlice.reducer;

@@ -143,8 +143,8 @@ const IntroModal: React.FC<IntroModalProps> = ({
                         {isLoginModal ? 'Войти' : 'Зарегистрироваться'}
                     </Button>
                     <Button
-                        variant='outline'
-                        colorScheme={colorMode === 'light' ? 'cyan' : 'teal'}
+                        variant='outlineSimple'
+                        colorScheme='cyan'
                         isDisabled={registrationLoading || loginLoading}
                         onClick={setIsLoginModalHandler}
                     >
