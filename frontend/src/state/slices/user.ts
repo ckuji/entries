@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { BASE_URL } from '../../constants';
 import axios from 'axios';
-import { DescriptionData, LinkAndUserIds, LinkWithUserAndLinkIds, LinkWithUserId, UserState } from '../../types/user';
+import { DescriptionData, ExpItemWithUserAndExpItemIds, ExpWithUserId, ExperienceAndUserIds, LinkAndUserIds, LinkWithUserAndLinkIds, LinkWithUserId, UserState } from '../../types/user';
 
 const initialState: UserState = {
     fetchUserLoading: 'idle',
@@ -9,6 +9,9 @@ const initialState: UserState = {
     createLinkLoading: 'idle',
     updateLinkLoading: 'idle',
     deleteLinkLoading: 'idle',
+    createExpItemLoading: 'idle',
+    updateExpItemLoading: 'idle',
+    deleteExpItemLoading: 'idle',
     userData: {
         id: 0,
         login: '',
@@ -19,12 +22,15 @@ const initialState: UserState = {
         },
         emptyInitialProfile: false,
         links: [],
+        experience: []
     },
     editablePage: false,
     editableDescription: false,
     userRouterId: null,
     editableLinks: false,
     editedLinksItem: null,
+    editableExperience: false,
+    editedExpItem: null,
 };
 
 export const fetchUser = createAsyncThunk(
@@ -110,6 +116,43 @@ export const deleteLinkAndUpdateLinks = createAsyncThunk(
     }
 );
 
+export const createExpItemAndUpdateExperience = createAsyncThunk(
+    'user/createExpItem',
+    async (newExpItem: ExpWithUserId) => {
+        await axios.post(`${BASE_URL}/experience`, {
+            userId: newExpItem.userId,
+            name: newExpItem.name,
+            percent: newExpItem.percent
+        }, {withCredentials: true});
+
+        const response = await axios.get(`${BASE_URL}/experience/${newExpItem.userId}`, {withCredentials: true});
+        return response.data;
+    }
+);
+
+export const updateExpItem = createAsyncThunk(
+    'user/updateExpItem',
+    async (expItem: ExpItemWithUserAndExpItemIds) => {
+        const response = await axios.put(`${BASE_URL}/experience`, {
+            name: expItem.name,
+            percent: expItem.percent,
+            id: expItem.id,
+            userId: expItem.userId
+        }, {withCredentials: true});
+        return response.data;
+    }
+);
+
+export const deleteExpItemAndUpdateExperience = createAsyncThunk(
+    'user/deleteExpItem',
+    async (expItem: ExperienceAndUserIds) => {
+        await axios.delete(`${BASE_URL}/experience/${expItem.id}`, {withCredentials: true});
+
+        const response = await axios.get(`${BASE_URL}/experience/${expItem.userId}`, {withCredentials: true});
+        return response.data;
+    }
+);
+
 export const userSlice = createSlice({
     name: 'user',
     initialState,
@@ -142,7 +185,13 @@ export const userSlice = createSlice({
             state.editableLinks = action.payload;
         },
         setEditedLinksItem: (state, action) => {
-            state.editedLinksItem = action.payload
+            state.editedLinksItem = action.payload;
+        },
+        setEditedExpItem: (state, action) => {
+            state.editedExpItem = action.payload;
+        },
+        setEditableExperience: (state, action) => {
+            state.editableExperience = action.payload;
         }
     },
     extraReducers: (builder) => {
@@ -211,6 +260,38 @@ export const userSlice = createSlice({
         builder.addCase(deleteLinkAndUpdateLinks.rejected, (state) => {
             state.deleteLinkLoading = 'rejected';
         });
+        builder.addCase(createExpItemAndUpdateExperience.pending, (state) => {
+            state.createExpItemLoading = 'pending';
+        });
+        builder.addCase(createExpItemAndUpdateExperience.fulfilled, (state, action) => {
+            state.createExpItemLoading = 'fulfilled';
+            state.userData.experience = action.payload;
+        });
+        builder.addCase(createExpItemAndUpdateExperience.rejected, (state) => {
+            state.createExpItemLoading = 'rejected';
+        });
+        builder.addCase(updateExpItem.pending, (state) => {
+            state.updateExpItemLoading = 'pending';
+        });
+        builder.addCase(updateExpItem.fulfilled, (state, action) => {
+            state.updateExpItemLoading = 'fulfilled';
+
+            const expItems = state.userData.experience.map((item) => item.id === action.payload.id ? action.payload : item);
+            state.userData.experience = expItems;
+        });
+        builder.addCase(updateExpItem.rejected, (state) => {
+            state.updateExpItemLoading = 'rejected';
+        });
+        builder.addCase(deleteExpItemAndUpdateExperience.pending, (state) => {
+            state.deleteExpItemLoading = 'pending';
+        });
+        builder.addCase(deleteExpItemAndUpdateExperience.fulfilled, (state, action) => {
+            state.deleteExpItemLoading = 'fulfilled';
+            state.userData.experience = action.payload;
+        });
+        builder.addCase(deleteExpItemAndUpdateExperience.rejected, (state) => {
+            state.deleteExpItemLoading = 'rejected';
+        });
     },
 });
 
@@ -222,6 +303,8 @@ export const {
     resetUserOwnerField,
     setEditableLinks,
     setEditedLinksItem,
+    setEditedExpItem,
+    setEditableExperience
 } = userSlice.actions;
 
 export default userSlice.reducer;

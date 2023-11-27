@@ -14,7 +14,8 @@ export class UsersService {
         return await this.usersRepository.find({
             relations: {
                 profile: true,
-                links: true
+                links: true,
+                experience: true
             }
         });
     }
@@ -34,7 +35,8 @@ export class UsersService {
             },
             relations: {
                 profile: true,
-                links: true
+                links: true,
+                experience: true
             },
             select: {
                 id: true,

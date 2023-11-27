@@ -7,6 +7,7 @@ import { UsersModule } from './user/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ProfileModule } from './profile/profile.module';
 import { LinkModule } from './links/link.module';
+import { ExperienceModule } from './experience/experience.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { LinkModule } from './links/link.module';
     AuthModule,
     ProfileModule,
     LinkModule,
+    ExperienceModule
   ],
   controllers: [AppController],
   providers: [AppService],

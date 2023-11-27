@@ -17,6 +17,9 @@ export class LinkService {
         return this.linkRepository.find({
             where: {
                 user: {id: +userId}
+            },
+            order: {
+                id: 'ASC'
             }
         });
     }
@@ -38,7 +41,7 @@ export class LinkService {
 
     updateOne = async (linkData: UpdateLinkDto, loginedId: number) => {
         if(+linkData.userId !== loginedId) {
-            throw new HttpException('Создавать ссылки может только владелец', HttpStatus.FORBIDDEN);
+            throw new HttpException('Обновлять ссылки может только владелец', HttpStatus.FORBIDDEN);
         }
 
         const link = await this.linkRepository.findOne({

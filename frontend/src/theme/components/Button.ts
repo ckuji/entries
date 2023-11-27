@@ -51,12 +51,14 @@ const outlineSimpleVariant = defineStyle((props) => {
   const { colorScheme: c } = props;
   return {
     color: `${c}.600`,
+    borderColor: `${c}.600`,
     _dark: {
       color: 'gray.100',
       borderColor: 'gray.100'
     },
     _hover: {
       color: `${c}.650`,
+      borderColor: `${c}.650`,
       bg: 'none',
       _dark: {
         color: 'gray.300',
@@ -64,6 +66,7 @@ const outlineSimpleVariant = defineStyle((props) => {
       },
       _disabled: {
         color: `${c}.600`,
+        borderColor: `${c}.600`,
         _dark: {
           color: 'gray.100',
           borderColor: 'gray.100'
@@ -72,6 +75,7 @@ const outlineSimpleVariant = defineStyle((props) => {
     },
     _active: {
       color: `${c}.700`,
+      borderColor: `${c}.700`,
       bg: 'none',
       _dark: {
         color: 'gray.350',
