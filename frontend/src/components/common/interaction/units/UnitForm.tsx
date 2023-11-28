@@ -9,28 +9,25 @@ type UnitFormProps = {
 
 const UnitForm: React.FC<UnitFormProps> = ({nameValue, additionValue, onChangeUnitHandler}) => {
     return (
-        <form>
+        <form style={{marginRight: '10px'}}>
             <Input
                 w='200px'
                 mr='10px'
-                color='blue'
-                textDecoration='underline'
-                _placeholder={{
-                    'textDecoration': 'none'
-                }}
+                marginBottom='5px'
                 type='text'
-                value={nameValue}
-                onChange={(e) => onChangeUnitHandler(e)}
                 name='name'
                 placeholder="Введите значение"
+                value={nameValue}
+                onChange={(e) => onChangeUnitHandler(e)}
             />
             <Input
                 w='200px'
+                marginBottom='5px'
                 type='text'
-                value={additionValue}
-                onChange={(e) => onChangeUnitHandler(e)}
                 name='addition'
                 placeholder="Дополнительно"
+                value={additionValue}
+                onChange={(e) => onChangeUnitHandler(e)}
             />
         </form>
     );

@@ -51,6 +51,7 @@ const Description: React.FC<DescriptionProps> = ({userId}) => {
                     placeholder='Введите описание профиля'
                     value={userData.profile.description}
                     onChange={onChangeDescriptionHandler}
+                    mb='10px'
                 /> :
                 <Text fontSize='sm'>
                     {userData?.profile?.description || 'Описание не заполнено'}

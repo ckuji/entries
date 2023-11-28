@@ -168,6 +168,12 @@ export const userSlice = createSlice({
             if(state.editedLinksItem !== null) {
                 state.editedLinksItem = null;
             }
+            if(state.editableExperience) {
+                state.editableExperience = !state.editableExperience;
+            }
+            if(state.editedExpItem !== null) {
+                state.editedExpItem = null;
+            }
         },
         setEditableDescription: (state, action) => {
             state.editableDescription = action.payload;

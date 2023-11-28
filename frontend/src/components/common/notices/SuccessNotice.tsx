@@ -8,9 +8,10 @@ type SuccessNoticeProps = {
 const SuccessNotice: React.FC<SuccessNoticeProps> = ({text}) => {
     return (
         <Box
+            minH='40px'
+            fontSize='sm'
             display='flex'
             alignItems='center'
-            ml='10px'
             p='0 10px'
             borderWidth='1px'
             borderStyle='solid'

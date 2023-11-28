@@ -4,6 +4,8 @@ import { EditIcon, DeleteIcon } from "@chakra-ui/icons";
 import UnitForm from "./UnitForm";
 import { IUnitsItem, IUnitsItemWithUnitId } from "../../../../types/user";
 import SuccessNotice from "../../notices/SuccessNotice";
+import LinksListItem from "../../../../pages_content/user/links/LinksListItem";
+import ExperienceListItem from "../../../../pages_content/user/experience/ExperienceListItem";
 
 type UnitsItemProps = {
     name: string,
@@ -15,7 +17,8 @@ type UnitsItemProps = {
     editableUnits: boolean,
     updateUnitLoading: string,
     onClickSaveUnitButton: (values: IUnitsItemWithUnitId) => void,
-    onDeleteUnitHandler: (id: number) => void
+    onDeleteUnitHandler: (id: number) => void,
+    type: string
 }
 
 const UnitsItem: React.FC<UnitsItemProps> = ({
@@ -28,7 +31,8 @@ const UnitsItem: React.FC<UnitsItemProps> = ({
     editableUnits,
     updateUnitLoading,
     onClickSaveUnitButton,
-    onDeleteUnitHandler
+    onDeleteUnitHandler,
+    type
 }) => {
     const [successMessage, setSuccessMessage] = useState('');
     const { colorMode } = useColorMode();
@@ -59,8 +63,25 @@ const UnitsItem: React.FC<UnitsItemProps> = ({
         setUnitsItemValuesLocal({...unitsItemValuesLocal, [event.target.name]: event.target.value});
     }
 
+    const infoItem = () => {
+        return (
+            type === 'links' ?
+                <LinksListItem
+                    editableUnits={editableUnits}
+                    name={unitsItemValuesLocal.name}
+                    addition={unitsItemValuesLocal.addition}
+                /> :
+            type === 'experience' ?
+                <ExperienceListItem
+                    editableUnits={editableUnits}
+                    name={unitsItemValuesLocal.name}
+                    addition={unitsItemValuesLocal.addition}
+                /> : ''
+        );
+    }
+
     return (
-        <Flex className="links-item" mb={editableUnits ? '10px' : '0'}>
+        <Flex className="list-item" flexWrap='wrap' alignItems={type === 'experience' ? 'center' : 'flex-start'}>
             {edited === index ? 
                 <UnitForm
                     nameValue={unitsItemValuesLocal.name}
@@ -68,23 +89,22 @@ const UnitsItem: React.FC<UnitsItemProps> = ({
                     onChangeUnitHandler={onChangeUnitHandler}
                 /> 
                 :
-                <Flex h={editableUnits ? '40px' : ''}>
-                    <Text fontSize='sm' mr='10px' display='flex' alignItems='center'>{unitsItemValuesLocal.name}</Text>
-                    <Text fontSize='sm' display='flex' alignItems='center'>{unitsItemValuesLocal.addition}</Text>
-                </Flex>
+                <>
+                    {infoItem()}
+                </>
             }
             {editableUnits ?
                 <Box
-                    ml='10px'
                     display={edited === index ? 'flex': 'none'}
+                    flexWrap='wrap'
+                    gap='5px 10px'
                     sx={{
-                        '.links-item:hover &': {
+                        '.list-item:hover &': {
                             display: 'flex'
                         }
                     }}
                 >
                     <Button
-                        mr='10px'
                         variant='outlineComplete'
                         colorScheme={colorMode === 'light' ? 'cyan' : 'teal'}
                         onClick={() => onChangeEditUnitsItemHandler(index)}
@@ -99,7 +119,7 @@ const UnitsItem: React.FC<UnitsItemProps> = ({
                         <DeleteIcon />
                     </Button>
                     <Button
-                        ml='10px'
+                        // m='0 10px'
                         variant='fill'
                         colorScheme={colorMode === 'light' ? 'cyan' : 'teal'}
                         isDisabled={name === unitsItemValuesLocal.name && addition === unitsItemValuesLocal.addition}

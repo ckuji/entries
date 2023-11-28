@@ -45,6 +45,19 @@ const theme = extendTheme({
         },
         orange: {
             650: '#ad4823'
+        },
+        greenBand: {
+            50: '#e0ffe0',
+            100: '#b1ffb1',
+            200: '#80ff80',
+            300: '#4fff4e',
+            400: '#25ff20',
+            500: '#14e60c',
+            550: '#0bcc08',
+            600: '#08b304',
+            700: '#008000',
+            800: '#004d00',
+            900: '#001b00'
         }
     },
     fontSizes: {
@@ -56,6 +69,15 @@ const theme = extendTheme({
       },
     initialColorMode: 'light',
     useSystemColorMode: false,
+    breakpoints: {
+        base: "0px",
+        xs: "320px",
+        sm: "480px",
+        md: "768px",
+        lg: "960px",
+        xl: "1200px",
+        "2xl": "1536px",
+      }
 })
 
 export default theme;

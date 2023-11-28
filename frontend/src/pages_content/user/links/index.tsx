@@ -1,15 +1,15 @@
 import { Box } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../hooks";
+import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { 
     createLinkAndUpdateLinks,
     deleteLinkAndUpdateLinks,
     setEditableLinks,
     setEditedLinksItem,
     updateLinksItem
-} from "../../state/slices/user";
-import { IUnitsItem, IUnitsItemWithId, IUnitsItemWithUnitId, TransformLinks } from "../../types/user";
-import Units from "../../components/common/interaction/units";
+} from "../../../state/slices/user";
+import { IUnitsItem, IUnitsItemWithId, IUnitsItemWithUnitId, TransformLinks } from "../../../types/user";
+import Units from "../../../components/common/interaction/units";
 
 type LinksProps = {
     userId: string

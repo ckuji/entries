@@ -4,8 +4,8 @@ import { Box, Spinner, Switch } from '@chakra-ui/react';
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { fetchUser, setUserRouterId, setEditablePage } from "../../state/slices/user";
 import Description from "./Description";
-import Links from "./Links";
-import Experience from "./Experience";
+import Links from "./links";
+import Experience from "./experience";
 
 const UserContent: React.FC = () => {
     const { fetchUserLoading, userData, editablePage } = useAppSelector((state) => state.user);

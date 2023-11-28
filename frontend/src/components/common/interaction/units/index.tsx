@@ -55,13 +55,14 @@ const Units: React.FC<UnitsProps> = ({
                     updateUnitLoading={updateUnitLoading}
                     onClickSaveUnitButton={onClickSaveUnitButton}
                     onDeleteUnitHandler={onDeleteUnitHandler}
+                    type={type}
                 />
             ) : type === 'links' ? 'Ссылок 0' :
                 type === 'experience' ? 'Навыков 0' : ''
             }
             {editableUnits ?
-                <Box>
-                    <Text>{
+                <Box mt='10px'>
+                    <Text fontSize='sm'>{
                             type === 'links' ? 'Создать новую ссылку' :
                             type === 'experience' ? 'Добавить навык' : ''
                         }</Text>

@@ -1,15 +1,15 @@
 import { Box } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../hooks";
+import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { 
     setEditedExpItem,
     createExpItemAndUpdateExperience,
     updateExpItem,
     deleteExpItemAndUpdateExperience,
     setEditableExperience
-} from "../../state/slices/user";
-import { IUnitsItem, IUnitsItemWithId, IUnitsItemWithUnitId, TransformExperience } from "../../types/user";
-import Units from "../../components/common/interaction/units";
+} from "../../../state/slices/user";
+import { IUnitsItem, IUnitsItemWithId, IUnitsItemWithUnitId, TransformExperience } from "../../../types/user";
+import Units from "../../../components/common/interaction/units";
 
 type ExperienceProps = {
     userId: string
