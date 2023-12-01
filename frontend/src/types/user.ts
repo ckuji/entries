@@ -38,7 +38,8 @@ export type LinkSample = {
 }
 
 export interface Link extends LinkSample {
-    id: number
+    id: number,
+    createdAt?: Date
 }
 
 export interface LinkWithUserId extends LinkSample {

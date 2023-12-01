@@ -3,7 +3,7 @@ import { ExpItem, IUnitsItemWithId, IUnitsItemWithUnitId, Link } from '../../../
 import UnitsItem from './UnitsItem';
 import { Box, Text } from "@chakra-ui/react";
 import UnitForm from './UnitForm';
-import UserElementSettings from '../../../../pages_content/user/UserElementSettings';
+import UserElementSettings from '../UserElementSettings';
 
 type UnitsProps = {
     items: IUnitsItemWithId[],
@@ -61,7 +61,7 @@ const Units: React.FC<UnitsProps> = ({
                 type === 'experience' ? 'Навыков 0' : ''
             }
             {editableUnits ?
-                <Box mt='10px'>
+                <Box m='5px 0'>
                     <Text fontSize='sm'>{
                             type === 'links' ? 'Создать новую ссылку' :
                             type === 'experience' ? 'Добавить навык' : ''

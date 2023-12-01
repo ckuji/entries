@@ -12,7 +12,8 @@ const LinksListItem: React.FC<LinksListItemProps> = ({editableUnits, name, addit
     return (
         <Flex
             minH={editableUnits ? '40px' : ''}
-            flexWrap='wrap' m={`0 10px ${editableUnits ? '10px' : '0'} 0`}
+            flexWrap='wrap'
+            mr='10px'
         >
             <Text
                 fontSize='sm'

@@ -1,5 +1,5 @@
 import React from "react";
-import { Input } from "@chakra-ui/react";
+import { Flex, Input } from "@chakra-ui/react";
 
 type UnitFormProps = {
     nameValue: string,
@@ -9,11 +9,15 @@ type UnitFormProps = {
 
 const UnitForm: React.FC<UnitFormProps> = ({nameValue, additionValue, onChangeUnitHandler}) => {
     return (
-        <form style={{marginRight: '10px'}}>
+        <form style={{
+            marginRight: '10px',
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: '5px'
+        }}>
             <Input
                 w='200px'
                 mr='10px'
-                marginBottom='5px'
                 type='text'
                 name='name'
                 placeholder="Введите значение"
@@ -22,7 +26,6 @@ const UnitForm: React.FC<UnitFormProps> = ({nameValue, additionValue, onChangeUn
             />
             <Input
                 w='200px'
-                marginBottom='5px'
                 type='text'
                 name='addition'
                 placeholder="Дополнительно"

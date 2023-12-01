@@ -12,7 +12,7 @@ const ExperienceListItem: React.FC<ExperienceListItemProps> = ({editableUnits, n
         <Box
             w={{base: '100%', sm: '50%'}}
             minH={editableUnits ? '40px' : '30px'}
-            m={`0 10px ${editableUnits ? '10px' : '0'} 0`}
+            mr='10px'
             display={{md: 'flex'}}
         >
             <Text

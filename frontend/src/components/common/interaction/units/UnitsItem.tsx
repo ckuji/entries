@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Text, Flex, Box, Button, useColorMode } from "@chakra-ui/react";
+import { Flex, Box, Button, useColorMode } from "@chakra-ui/react";
 import { EditIcon, DeleteIcon } from "@chakra-ui/icons";
 import UnitForm from "./UnitForm";
 import { IUnitsItem, IUnitsItemWithUnitId } from "../../../../types/user";
@@ -81,8 +81,14 @@ const UnitsItem: React.FC<UnitsItemProps> = ({
     }
 
     return (
-        <Flex className="list-item" flexWrap='wrap' alignItems={type === 'experience' ? 'center' : 'flex-start'}>
-            {edited === index ? 
+        <Flex
+            gap='5px 0'
+            className="list-item"
+            flexWrap='wrap'
+            alignItems={type === 'experience' ? 'center' : 'flex-start'}
+            mb={editableUnits ? '10px' : 'none'}
+        >
+            {edited === index ?
                 <UnitForm
                     nameValue={unitsItemValuesLocal.name}
                     additionValue={unitsItemValuesLocal.addition}
@@ -119,7 +125,6 @@ const UnitsItem: React.FC<UnitsItemProps> = ({
                         <DeleteIcon />
                     </Button>
                     <Button
-                        // m='0 10px'
                         variant='fill'
                         colorScheme={colorMode === 'light' ? 'cyan' : 'teal'}
                         isDisabled={name === unitsItemValuesLocal.name && addition === unitsItemValuesLocal.addition}

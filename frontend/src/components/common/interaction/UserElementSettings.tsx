@@ -1,6 +1,6 @@
 import { Box, Button, useColorMode } from "@chakra-ui/react";
 import React from "react";
-import SuccessNotice from "../../components/common/notices/SuccessNotice";
+import SuccessNotice from "../notices/SuccessNotice";
 import { EditIcon } from "@chakra-ui/icons";
 
 type UserElementSettingsProps = {

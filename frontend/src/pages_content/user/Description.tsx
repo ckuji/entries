@@ -7,7 +7,7 @@ import {
     createDescription,
     updateDescription
 } from "../../state/slices/user";
-import UserElementSettings from "./UserElementSettings";
+import UserElementSettings from "../../components/common/interaction/UserElementSettings";
 
 type DescriptionProps = {
     userId: string

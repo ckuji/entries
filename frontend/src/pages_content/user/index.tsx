@@ -6,6 +6,7 @@ import { fetchUser, setUserRouterId, setEditablePage } from "../../state/slices/
 import Description from "./Description";
 import Links from "./links";
 import Experience from "./experience";
+import Calendar from "./calendar";
 
 const UserContent: React.FC = () => {
     const { fetchUserLoading, userData, editablePage } = useAppSelector((state) => state.user);
@@ -44,6 +45,7 @@ const UserContent: React.FC = () => {
                     <Description userId={router.query.id} />
                     <Links userId={router.query.id} />
                     <Experience userId={router.query.id} />
+                    <Calendar />
                 </Box>
             }
         </Box>
