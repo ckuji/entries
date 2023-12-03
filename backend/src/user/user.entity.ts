@@ -1,3 +1,4 @@
+import { DayEntity } from 'src/days/day.entity';
 import { ExperienceEntity } from 'src/experience/experience.entity';
 import { LinkEntity } from 'src/links/link.entity';
 import { ProfileEntity } from 'src/profile/profile.entity';
@@ -23,4 +24,7 @@ export class UserEntity extends Base {
 
   @OneToMany(() => ExperienceEntity, experience => experience.user)
   experience: ExperienceEntity
+
+  @OneToMany(() => DayEntity, day => day.user)
+  days: DayEntity
 }

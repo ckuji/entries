@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { BASE_URL } from '../../constants';
 import axios from 'axios';
-import { DescriptionData, ExpItemWithUserAndExpItemIds, ExpWithUserId, ExperienceAndUserIds, LinkAndUserIds, LinkWithUserAndLinkIds, LinkWithUserId, UserState } from '../../types/user';
+import { CommonDay, DescriptionData, ExpItemWithUserAndExpItemIds, ExpWithUserId, ExperienceAndUserIds, LinkAndUserIds, LinkWithUserAndLinkIds, LinkWithUserId, UserState } from '../../types/user';
 
 const initialState: UserState = {
     fetchUserLoading: 'idle',
@@ -22,7 +22,8 @@ const initialState: UserState = {
         },
         emptyInitialProfile: false,
         links: [],
-        experience: []
+        experience: [],
+        days: []
     },
     editablePage: false,
     editableDescription: false,
@@ -31,6 +32,7 @@ const initialState: UserState = {
     editedLinksItem: null,
     editableExperience: false,
     editedExpItem: null,
+    dateValue: ''
 };
 
 export const fetchUser = createAsyncThunk(
@@ -153,6 +155,14 @@ export const deleteExpItemAndUpdateExperience = createAsyncThunk(
     }
 );
 
+export const changeDay = createAsyncThunk(
+    'user/changeDay',
+    async (day: CommonDay) => {
+        const response = await axios.post(`${BASE_URL}/day`, day, {withCredentials: true});
+        console.log('response data is ...', response.data);
+    }
+);
+
 export const userSlice = createSlice({
     name: 'user',
     initialState,
@@ -198,6 +208,9 @@ export const userSlice = createSlice({
         },
         setEditableExperience: (state, action) => {
             state.editableExperience = action.payload;
+        },
+        setDateValue: (state, action) => {
+            state.dateValue = action.payload;
         }
     },
     extraReducers: (builder) => {
@@ -310,7 +323,8 @@ export const {
     setEditableLinks,
     setEditedLinksItem,
     setEditedExpItem,
-    setEditableExperience
+    setEditableExperience,
+    setDateValue
 } = userSlice.actions;
 
 export default userSlice.reducer;

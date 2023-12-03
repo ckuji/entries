@@ -8,6 +8,8 @@ import { AuthModule } from './auth/auth.module';
 import { ProfileModule } from './profile/profile.module';
 import { LinkModule } from './links/link.module';
 import { ExperienceModule } from './experience/experience.module';
+import { DayModule } from './days/day.module';
+import { DayUnitModule } from './day_unit/dayUnit.module';
 
 @Module({
   imports: [
@@ -32,7 +34,9 @@ import { ExperienceModule } from './experience/experience.module';
     AuthModule,
     ProfileModule,
     LinkModule,
-    ExperienceModule
+    ExperienceModule,
+    DayModule,
+    DayUnitModule
   ],
   controllers: [AppController],
   providers: [AppService],

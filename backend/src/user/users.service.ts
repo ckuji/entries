@@ -36,7 +36,10 @@ export class UsersService {
             relations: {
                 profile: true,
                 links: true,
-                experience: true
+                experience: true,
+                days: {
+                    dayUnits: true
+                }
             },
             select: {
                 id: true,
@@ -44,7 +47,7 @@ export class UsersService {
                 profile: {
                     id: true,
                     description: true
-                },
+                }
             },
             order: {
                 links: {

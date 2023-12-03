@@ -14,7 +14,8 @@ export type UserState = {
     editableLinks: boolean,
     editedLinksItem: null | number,
     editableExperience: boolean,
-    editedExpItem: null | number
+    editedExpItem: null | number,
+    dateValue: string
 }
 
 export type User = {
@@ -24,12 +25,25 @@ export type User = {
     profile: Profile,
     emptyInitialProfile: boolean,
     links: Link[],
-    experience: ExpItem[]
+    experience: ExpItem[],
+    days: Day[]
 }
 
 type Profile = {
     description: string,
     initialDescription: string
+}
+
+export type Day = {
+    date: string
+    description: string
+    hours: string
+    dayUnits: DayUnit[]
+}
+
+type DayUnit = {
+    name: string,
+    percent: number
 }
 
 export type LinkSample = {
@@ -108,4 +122,12 @@ export type TransformExperience = {
     name: string,
     addition: string,
     id: number
+}
+
+export type CommonDay = {
+    readonly userId: string
+    readonly date: string
+    readonly description?: string
+    readonly hours?: number
+    readonly dayUnits?: DayUnit[]
 }

@@ -2,13 +2,15 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import { Box, Center, Flex, useColorMode } from "@chakra-ui/react";
 import React from "react";
 import moment from "moment";
+import CalendarDayInfo from "./calendar_day_info";
 
 type CalendarBodyProps = {
     weeks: any[][],
     setInputValueHandler: (value: string) => void,
     month: string,
     changeMonthHandler: (type: string) => void,
-    inputValue: string
+    inputValue: string,
+    userId: string
 }
 
 const CalendarBody: React.FC<CalendarBodyProps> = ({
@@ -16,7 +18,8 @@ const CalendarBody: React.FC<CalendarBodyProps> = ({
     setInputValueHandler,
     month,
     changeMonthHandler,
-    inputValue
+    inputValue,
+    userId
 }) => {
     const { colorMode } = useColorMode();
 
@@ -36,7 +39,7 @@ const CalendarBody: React.FC<CalendarBodyProps> = ({
                     <Flex
                         key={`${item[0]}_${idx}`}
                         sx={{
-                            '&:first-child': {
+                            '&:first-of-type': {
                                 justifyContent: 'flex-end'
                             }
                         }}
@@ -80,9 +83,7 @@ const CalendarBody: React.FC<CalendarBodyProps> = ({
                     </Flex>
                 )}
             </Box>
-            <Box mt='10px' minH='200px' border='1px solid #d6d6d6'>
-                
-            </Box>
+            <CalendarDayInfo userId={userId} />
         </Box>
     );
 }

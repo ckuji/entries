@@ -45,7 +45,7 @@ const UserContent: React.FC = () => {
                     <Description userId={router.query.id} />
                     <Links userId={router.query.id} />
                     <Experience userId={router.query.id} />
-                    <Calendar />
+                    <Calendar userId={router.query.id} />
                 </Box>
             }
         </Box>
