@@ -1,44 +1,51 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import CalendarDayInfoItem from "./CalendarDayInfoItem";
 import { AddIcon } from "@chakra-ui/icons";
-import { useAppDispatch, useAppSelector } from "../../../../hooks";
-import { changeDay } from "../../../../state/slices/user";
-
-type DayItem = {
-    name: string,
-    percent: string
-}
+import { Box } from "@chakra-ui/react";
+import { Day } from "../../../../types/user";
 
 type CalendarDayInfoItemsProps = {
-    userId: string
+    editableCalendar: boolean,
+    selectedDayData: Day,
+    setSelectedDayData: (value: Day) => void
 }
 
-const CalendarDayInfoItems: React.FC<CalendarDayInfoItemsProps> = ({userId}) => {
-    const dispatch = useAppDispatch();
-    // const [dayItems, setDayItems] = useState<DayItem[]>([]);
+const CalendarDayInfoItems: React.FC<CalendarDayInfoItemsProps> = ({
+    selectedDayData,
+    editableCalendar,
+    setSelectedDayData
+}) => {
 
-    // const onAddDayItemHandler = () => {
-    //     setDayItems([...dayItems, {name: '', percent: ''}]);
-    // }
-
-
+    const onAddDayItemHandler = () => {
+        setSelectedDayData({
+            ...selectedDayData,
+            dayUnits: [
+                ...selectedDayData.dayUnits, {name: '', percent: ''}
+            ]
+        });
+    }
 
     return (
-        <>
-            {/* {dayItems.map((item, index) =>
+        <Box mt='10px'>
+            {selectedDayData.dayUnits.length ? selectedDayData.dayUnits.map((item, index) =>
                 <CalendarDayInfoItem
                     key={`${item.name}_${index}`}
                     name={item.name}
                     percent={item.percent}
+                    editableCalendar={editableCalendar}
+                    index={index}
+                    selectedDayData={selectedDayData}
+                    setSelectedDayData={setSelectedDayData}
                 />
-            )} */}
-            
-            <AddIcon
-                ml='5px'
-                cursor='pointer'
-                // onClick={onAddDayItemHandler}
-            />
-        </>
+            ) : ''}
+            {editableCalendar ?
+                <AddIcon
+                    ml='5px'
+                    cursor='pointer'
+                    onClick={onAddDayItemHandler}
+                /> : ''
+            }
+        </Box>
     );
 }
 

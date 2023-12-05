@@ -15,7 +15,9 @@ export type UserState = {
     editedLinksItem: null | number,
     editableExperience: boolean,
     editedExpItem: null | number,
-    dateValue: string
+    dateValue: string,
+    editableCalendar: boolean,
+    editableDayElements: EditableDayElements
 }
 
 export type User = {
@@ -43,7 +45,7 @@ export type Day = {
 
 type DayUnit = {
     name: string,
-    percent: number
+    percent: string
 }
 
 export type LinkSample = {
@@ -130,4 +132,10 @@ export type CommonDay = {
     readonly description?: string
     readonly hours?: number
     readonly dayUnits?: DayUnit[]
+}
+
+export type EditableDayElements = {
+    editableDescription: boolean,
+    editableDayUnits: boolean,
+    editableHours: boolean
 }

@@ -25,7 +25,7 @@ const UserElementSettings: React.FC<UserElementSettingsProps> = ({
     return (
         <>
             {editablePage ?
-                <Box mt={editableElement ? '0px' : '10px'} display='flex'>
+                <Box mt={editableElement ? '0px' : '10px'} display='flex' gap='10px' flexWrap='wrap'>
                     <Button
                         variant='outlineComplete'
                         colorScheme={colorMode === 'light' ? 'cyan' : 'teal'}

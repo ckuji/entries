@@ -32,7 +32,13 @@ const initialState: UserState = {
     editedLinksItem: null,
     editableExperience: false,
     editedExpItem: null,
-    dateValue: ''
+    dateValue: '',
+    editableCalendar: false,
+    editableDayElements: {
+        editableDescription: false,
+        editableDayUnits: false,
+        editableHours: false
+    }
 };
 
 export const fetchUser = createAsyncThunk(
@@ -184,6 +190,18 @@ export const userSlice = createSlice({
             if(state.editedExpItem !== null) {
                 state.editedExpItem = null;
             }
+            if(state.editableCalendar) {
+                state.editableCalendar = !state.editableCalendar;
+            }
+            if(state.editableDayElements.editableDescription) {
+                state.editableDayElements.editableDescription = false;
+            }
+            if(state.editableDayElements.editableDayUnits) {
+                state.editableDayElements.editableDayUnits = false;
+            }
+            if(state.editableDayElements.editableHours) {
+                state.editableDayElements.editableHours = false;
+            }
         },
         setEditableDescription: (state, action) => {
             state.editableDescription = action.payload;
@@ -211,6 +229,17 @@ export const userSlice = createSlice({
         },
         setDateValue: (state, action) => {
             state.dateValue = action.payload;
+        },
+        setEditableCalendar: (state, action) => {
+            state.editableCalendar = action.payload;
+        },
+        setEditableDayElements: (state, action) => {
+            state.editableDayElements = action.payload;
+        },
+        resetEditableDayElements: (state) => {
+            state.editableDayElements.editableDescription = false;
+            state.editableDayElements.editableDayUnits = false;
+            state.editableDayElements.editableHours = false;
         }
     },
     extraReducers: (builder) => {
@@ -324,7 +353,10 @@ export const {
     setEditedLinksItem,
     setEditedExpItem,
     setEditableExperience,
-    setDateValue
+    setDateValue,
+    setEditableCalendar,
+    setEditableDayElements,
+    resetEditableDayElements
 } = userSlice.actions;
 
 export default userSlice.reducer;
