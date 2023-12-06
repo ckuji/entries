@@ -1,14 +1,14 @@
 import React from "react";
 import { EditIcon } from "@chakra-ui/icons";
-import { Box, Flex, Input, Text } from "@chakra-ui/react";
-import { Day, EditableDayElements } from "../../../../types/user";
+import { Box, Flex, Input } from "@chakra-ui/react";
+import { DayExtended, EditableDayElements } from "../../../../types/user";
 import { useAppDispatch } from "../../../../hooks";
 import { setEditableDayElements } from "../../../../state/slices/user";
 
 type CalendarDayInfoHoursProps = {
     editableCalendar: boolean,
-    selectedDayData: Day,
-    setSelectedDayData: (value: Day) => void,
+    selectedDayData: DayExtended,
+    setSelectedDayData: (value: DayExtended) => void,
     editableDayElements: EditableDayElements
 }
 
@@ -36,23 +36,26 @@ const CalendarDayInfoHours: React.FC<CalendarDayInfoHoursProps> = ({
 
     return (
         <Box m='10px 0 0 5px'>
-            <Flex alignItems='center'>
-                <Box h='fit-content' mr='10px'>Количество часов:</Box>
+            <Flex alignItems='center' gap='0 10px'>
+                <Box h='fit-content'>Количество часов:</Box>
                 {editableDayElements.editableHours ?
-                    <Input
-                        w='60px'
-                        h='30px'
-                        placeholder='%'
-                        value={selectedDayData.hours}
-                        onChange={setHoursHandler}
-                    />
+                    <>
+                        <Input
+                            w='60px'
+                            h='30px'
+                            placeholder='%'
+                            value={selectedDayData.hours}
+                            onChange={setHoursHandler}
+                        />
+                    </>
                     :
-                    <Box p='0 5px'>{selectedDayData.hours}</Box>
+                    <Box>{selectedDayData.hours || 0}</Box>
+                }
+                {editableCalendar ?
+                    <EditIcon cursor='pointer' onClick={setEditHoursHandler} /> : ''
                 }
             </Flex>
-            {editableCalendar ?
-                <EditIcon ml='5px' cursor='pointer' onClick={setEditHoursHandler} /> : ''
-            }
+
         </Box>
     );
 }

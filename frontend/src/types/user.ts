@@ -7,6 +7,7 @@ export type UserState = {
     createExpItemLoading: string,
     updateExpItemLoading: string,
     deleteExpItemLoading: string,
+    changeDayLoading: string,
     userData: User,
     editablePage: boolean,
     editableDescription: boolean,
@@ -28,7 +29,7 @@ export type User = {
     emptyInitialProfile: boolean,
     links: Link[],
     experience: ExpItem[],
-    days: Day[]
+    days: DayExtended[]
 }
 
 type Profile = {
@@ -36,16 +37,25 @@ type Profile = {
     initialDescription: string
 }
 
-export type Day = {
-    date: string
-    description: string
-    hours: string
-    dayUnits: DayUnit[]
-}
-
 type DayUnit = {
     name: string,
     percent: string
+}
+
+export type DayUnitForSending = {
+    name: string,
+    percent: number
+}
+
+export type DayExtended = {
+    date: string
+    description: string
+    hours: string
+    dayUnits: DayUnitEditExtended[]
+}
+
+interface DayUnitEditExtended extends DayUnit {
+    editable: boolean
 }
 
 export type LinkSample = {
@@ -127,11 +137,16 @@ export type TransformExperience = {
 }
 
 export type CommonDay = {
-    readonly userId: string
-    readonly date: string
-    readonly description?: string
-    readonly hours?: number
-    readonly dayUnits?: DayUnit[]
+    userId?: string
+    date?: string
+    description?: string
+    hours?: number
+    dayUnits?: DayUnitNumPercent[]
+}
+
+type DayUnitNumPercent = {
+    name: string,
+    percent: number
 }
 
 export type EditableDayElements = {

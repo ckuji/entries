@@ -1,14 +1,14 @@
 import React from "react";
 import { EditIcon } from "@chakra-ui/icons";
 import { Box, Textarea } from "@chakra-ui/react";
-import { Day, EditableDayElements } from "../../../../types/user";
+import { DayExtended, EditableDayElements } from "../../../../types/user";
 import { useAppDispatch } from "../../../../hooks";
 import { setEditableDayElements } from "../../../../state/slices/user";
 
 type CalendarDayInfoDescriptionProps = {
     editableCalendar: boolean,
-    selectedDayData: Day,
-    setSelectedDayData: (value: Day) => void,
+    selectedDayData: DayExtended,
+    setSelectedDayData: (value: DayExtended) => void,
     editableDayElements: EditableDayElements
 }
 

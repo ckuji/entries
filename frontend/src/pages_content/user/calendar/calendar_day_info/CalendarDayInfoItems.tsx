@@ -2,12 +2,13 @@ import React from "react";
 import CalendarDayInfoItem from "./CalendarDayInfoItem";
 import { AddIcon } from "@chakra-ui/icons";
 import { Box } from "@chakra-ui/react";
-import { Day } from "../../../../types/user";
+import { DayExtended } from "../../../../types/user";
+import { useAppSelector } from "../../../../hooks";
 
 type CalendarDayInfoItemsProps = {
     editableCalendar: boolean,
-    selectedDayData: Day,
-    setSelectedDayData: (value: Day) => void
+    selectedDayData: DayExtended,
+    setSelectedDayData: (value: DayExtended) => void
 }
 
 const CalendarDayInfoItems: React.FC<CalendarDayInfoItemsProps> = ({
@@ -15,14 +16,19 @@ const CalendarDayInfoItems: React.FC<CalendarDayInfoItemsProps> = ({
     editableCalendar,
     setSelectedDayData
 }) => {
+    const userData = useAppSelector((state => state.user.userData));
 
     const onAddDayItemHandler = () => {
-        setSelectedDayData({
-            ...selectedDayData,
-            dayUnits: [
-                ...selectedDayData.dayUnits, {name: '', percent: ''}
-            ]
-        });
+        userData.experience.map((item) => {
+            if(!selectedDayData.dayUnits.some((unit) => unit.name === item.name)) {
+                setSelectedDayData({
+                    ...selectedDayData,
+                    dayUnits: [
+                        ...selectedDayData.dayUnits, {name: item.name, percent: '', editable: true}
+                    ]
+                });
+            }
+        })
     }
 
     return (
@@ -32,10 +38,12 @@ const CalendarDayInfoItems: React.FC<CalendarDayInfoItemsProps> = ({
                     key={`${item.name}_${index}`}
                     name={item.name}
                     percent={item.percent}
+                    editable={item.editable}
                     editableCalendar={editableCalendar}
                     index={index}
                     selectedDayData={selectedDayData}
                     setSelectedDayData={setSelectedDayData}
+                    experience={userData.experience}
                 />
             ) : ''}
             {editableCalendar ?

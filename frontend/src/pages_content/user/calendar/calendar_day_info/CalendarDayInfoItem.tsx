@@ -1,34 +1,31 @@
-import React, { useState } from "react";
+import React from "react";
 import { Box, Flex, Input, Select } from "@chakra-ui/react";
-import { useAppSelector } from "../../../../hooks";
 import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
-import { Day } from "../../../../types/user";
+import { DayExtended, ExpItem } from "../../../../types/user";
 
 type CalendarDayInfoItemProps = {
     name: string,
     percent: string,
+    editable: boolean,
     editableCalendar: boolean,
     index: number,
-    selectedDayData: Day,
-    setSelectedDayData: (value: Day) => void
+    selectedDayData: DayExtended,
+    setSelectedDayData: (value: DayExtended) => void,
+    experience: ExpItem[]
 }
 
 const CalendarDayInfoItem: React.FC<CalendarDayInfoItemProps> = ({
     name,
     percent,
+    editable,
     editableCalendar,
     index,
     selectedDayData,
-    setSelectedDayData
+    setSelectedDayData,
+    experience
 }) => {
-    const userData = useAppSelector((state => state.user.userData));
-    const [editedItem, setEditedItem] = useState<boolean>(false);
-
-    const setEditedItemHandler = () => {
-        setEditedItem(!editedItem);
-    }
-
-    const setHandler = (type: string, value: string) => {
+    
+    const setHandler = (type: string, value: string | boolean) => {
         let updatedUnits = selectedDayData.dayUnits.map((item, idx) => {
             if(idx === index) {
                 return {...item, [type]: value}
@@ -53,6 +50,10 @@ const CalendarDayInfoItem: React.FC<CalendarDayInfoItemProps> = ({
         });
     }
 
+    const setEditedItemHandler = () => {
+        setHandler('editable', !editable);
+    }
+
     const onSelectExpItemHandler = (event: React.ChangeEvent<HTMLSelectElement>) => {
         if(selectedDayData.dayUnits.some(item => item.name === event.target.value)) {
             removeHandler();
@@ -67,7 +68,7 @@ const CalendarDayInfoItem: React.FC<CalendarDayInfoItemProps> = ({
     
     return (
         <Flex m='5px 0 0 5px' alignItems='center' gap='10px'>
-            {editedItem ?
+            {editable ?
                 <>
                     <Select
                         w='200px'
@@ -78,7 +79,7 @@ const CalendarDayInfoItem: React.FC<CalendarDayInfoItemProps> = ({
                         defaultValue={name}
                         onChange={onSelectExpItemHandler}
                     >
-                        {userData.experience.map((item, index) =>
+                        {experience.map((item, index) =>
                             <option
                                 key={`${item.name}_${index}`}
                                 value={item.name}

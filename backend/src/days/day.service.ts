@@ -34,15 +34,15 @@ export class DayService {
             await this.dayRepository.save(day);
         }
 
-        if((dto.description !== null || dto.description !== undefined) && dto.description !== day.description) {
+        if(dto.description !== null && dto.description !== undefined && dto.description !== day.description) {
             day.description = dto.description;
         }
 
-        if((dto.hours !== null || dto.hours !== undefined) && dto.hours !== +day.hours) {
+        if(dto.hours !== null && dto.hours !== undefined && dto.hours !== +day.hours) {
             day.hours = dto.hours;
         }
 
-        if(dto.dayUnits.length) {
+        if(dto.dayUnits?.length) {
             dto.dayUnits.map( async(item) => {
                 const unitExist = await this.dayUnitRepository.findOne({
                     where: {
@@ -51,7 +51,7 @@ export class DayService {
                     }
                 });
 
-                if(unitExist) {
+                if(unitExist && item.percent !== 0) {
                     let changed = false;
                     if(unitExist.name !== item.name) {
                         unitExist.name = item.name;
@@ -65,7 +65,9 @@ export class DayService {
                     if(changed) {
                         await this.dayUnitRepository.save(unitExist);
                     }
-                } else {
+                } else if(unitExist && item.percent === 0) {
+                    await this.dayUnitRepository.delete({name: item.name});
+                } else if(item.percent !== 0) {
                     const newUnit = this.dayUnitRepository.create({
                         name: item.name,
                         percent: item.percent,

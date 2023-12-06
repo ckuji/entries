@@ -1,7 +1,17 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { BASE_URL } from '../../constants';
 import axios from 'axios';
-import { CommonDay, DescriptionData, ExpItemWithUserAndExpItemIds, ExpWithUserId, ExperienceAndUserIds, LinkAndUserIds, LinkWithUserAndLinkIds, LinkWithUserId, UserState } from '../../types/user';
+import { 
+    CommonDay,
+    DescriptionData,
+    ExpItemWithUserAndExpItemIds,
+    ExpWithUserId,
+    ExperienceAndUserIds,
+    LinkAndUserIds,
+    LinkWithUserAndLinkIds,
+    LinkWithUserId,
+    UserState
+} from '../../types/user';
 
 const initialState: UserState = {
     fetchUserLoading: 'idle',
@@ -12,6 +22,7 @@ const initialState: UserState = {
     createExpItemLoading: 'idle',
     updateExpItemLoading: 'idle',
     deleteExpItemLoading: 'idle',
+    changeDayLoading: 'idle',
     userData: {
         id: 0,
         login: '',
@@ -165,7 +176,7 @@ export const changeDay = createAsyncThunk(
     'user/changeDay',
     async (day: CommonDay) => {
         const response = await axios.post(`${BASE_URL}/day`, day, {withCredentials: true});
-        console.log('response data is ...', response.data);
+        return response.data;
     }
 );
 
@@ -339,6 +350,16 @@ export const userSlice = createSlice({
         });
         builder.addCase(deleteExpItemAndUpdateExperience.rejected, (state) => {
             state.deleteExpItemLoading = 'rejected';
+        });
+
+        builder.addCase(changeDay.pending, (state) => {
+            state.changeDayLoading = 'pending';
+        });
+        builder.addCase(changeDay.fulfilled, (state, action) => {
+            state.changeDayLoading = 'fulfilled';
+        });
+        builder.addCase(changeDay.rejected, (state) => {
+            state.changeDayLoading = 'rejected';
         });
     },
 });
