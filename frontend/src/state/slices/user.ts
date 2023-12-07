@@ -176,7 +176,9 @@ export const changeDay = createAsyncThunk(
     'user/changeDay',
     async (day: CommonDay) => {
         const response = await axios.post(`${BASE_URL}/day`, day, {withCredentials: true});
-        return response.data;
+
+        const fetchDay = await axios.get(`${BASE_URL}/day/${response.data.id}`, {withCredentials: true})
+        return fetchDay.data;
     }
 );
 
@@ -351,12 +353,19 @@ export const userSlice = createSlice({
         builder.addCase(deleteExpItemAndUpdateExperience.rejected, (state) => {
             state.deleteExpItemLoading = 'rejected';
         });
-
         builder.addCase(changeDay.pending, (state) => {
             state.changeDayLoading = 'pending';
         });
         builder.addCase(changeDay.fulfilled, (state, action) => {
             state.changeDayLoading = 'fulfilled';
+            state.userData.days = state.userData.days.some((unit) => unit.id === action.payload.id) ?
+                state.userData.days.map((item) => {
+                    if(action.payload.id === item.id) {
+                        return action.payload;
+                    }
+                    return item;
+                }) :
+                [...state.userData.days, action.payload];
         });
         builder.addCase(changeDay.rejected, (state) => {
             state.changeDayLoading = 'rejected';

@@ -35,7 +35,6 @@ const UserElementSettings: React.FC<UserElementSettingsProps> = ({
                     </Button>                    
                     {editableElement ?
                         <Button
-                            ml='10px'
                             variant='fill'
                             colorScheme={colorMode === 'light' ? 'cyan' : 'teal'}
                             isDisabled={isDisabledSaveButton}

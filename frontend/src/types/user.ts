@@ -48,6 +48,8 @@ export type DayUnitForSending = {
 }
 
 export type DayExtended = {
+    id?: string,
+    updatedAt?: string,
     date: string
     description: string
     hours: string

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import CalendarDayInfoItem from "./CalendarDayInfoItem";
 import { AddIcon } from "@chakra-ui/icons";
 import { Box } from "@chakra-ui/react";
@@ -19,16 +19,17 @@ const CalendarDayInfoItems: React.FC<CalendarDayInfoItemsProps> = ({
     const userData = useAppSelector((state => state.user.userData));
 
     const onAddDayItemHandler = () => {
-        userData.experience.map((item) => {
-            if(!selectedDayData.dayUnits.some((unit) => unit.name === item.name)) {
+        for(let i = 0; i <userData.experience.length; i++) {
+            if(!selectedDayData.dayUnits.some((unit) => unit.name === userData.experience[i]?.name)) {
                 setSelectedDayData({
                     ...selectedDayData,
                     dayUnits: [
-                        ...selectedDayData.dayUnits, {name: item.name, percent: '', editable: true}
+                        ...selectedDayData.dayUnits, {name: userData.experience[i]?.name || '', percent: '', editable: true}
                     ]
                 });
+                break;
             }
-        })
+        }
     }
 
     return (

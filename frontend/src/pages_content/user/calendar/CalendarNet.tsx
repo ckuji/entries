@@ -23,13 +23,16 @@ const CalendarNet: React.FC<CalendarNetProps> = ({weeks, dateValue, setInputValu
                     }}
                 >
                     {item.map((unit: any, index) =>
-                        <Box
-                            key={`${unit}_${index}`}
+                        <Flex
+                            flexDirection='column'
+                            justifyContent='space-between'
+                            key={`${unit.value}_${index}`}
                             boxSizing="content-box"
                             p='0 5px'
-                            w='50px'
-                            h='60px'
-                            bg={moment().format('DD.MM.YYYY') === unit.format('DD.MM.YYYY') ?
+                            w={{base: '28px', sm: '50px'}}
+                            h={{base: '40px', sm: '60px'}}
+                            fontSize={{base: 'sm', sm: 'md'}}
+                            bg={moment().format('DD.MM.YYYY') === unit.value.format('DD.MM.YYYY') ?
                                 (colorMode === 'dark' ? 'gray.600' : 'gray.300') : 'none'
                             }
                             borderTop={idx === 0 || idx === 1 ? '1px solid #d6d6d6' : 'none'}
@@ -41,7 +44,7 @@ const CalendarNet: React.FC<CalendarNetProps> = ({weeks, dateValue, setInputValu
                                 '&:last-child': {
                                     borderRight: '1px solid #d6d6d6'
                                 },
-                                '&:after': dateValue === unit.format('DD.MM.YYYY') ? {
+                                '&:after': dateValue === unit.value.format('DD.MM.YYYY') ? {
                                     content: '""',
                                     display: 'block',
                                     position: 'absolute',
@@ -53,10 +56,28 @@ const CalendarNet: React.FC<CalendarNetProps> = ({weeks, dateValue, setInputValu
                                     border: '4px solid yellow'
                                 } : 'none'
                             }}
-                            onClick={() => setInputValueHandler(unit.format('DD.MM.YYYY'))}
+                            onClick={() => setInputValueHandler(unit.value.format('DD.MM.YYYY'))}
                         >
-                            {unit.format('DD')}
-                        </Box>
+                            <Box>{unit.value.format('DD')}</Box>
+                            {unit.lineAmountArray ?
+                                <Flex m='0 0 5px 10px'>
+                                    {unit.lineAmountArray.map((item: number) =>
+                                        <Box
+                                            h='8px'
+                                            w={{base: '1px', sm: '3px'}}
+                                            mr={{base: '2px', sm: '4px'}}
+                                            bg={
+                                                unit.lineAmountArray.length === 1 ? '#fa5b16' :
+                                                unit.lineAmountArray.length === 2 ? '#f8a116' :
+                                                unit.lineAmountArray.length === 3 ? '#f6e816' :
+                                                unit.lineAmountArray.length === 4 ? '#6de523' :
+                                                unit.lineAmountArray.length === 5 ? '#00d42e' : ''
+                                            }
+                                        ></Box>
+                                    )}
+                                </Flex> : ''
+                            }
+                        </Flex>
                     )}
                 </Flex>
             )}

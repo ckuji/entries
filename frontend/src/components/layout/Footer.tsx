@@ -1,10 +1,11 @@
+import { Box, Flex } from "@chakra-ui/react";
 import React from "react";
 
 const Footer: React.FC = () => {
     return (
-        <div>
-            Footer
-        </div>
+        <Box h='60px'>
+            
+        </Box>
     )
 }
 

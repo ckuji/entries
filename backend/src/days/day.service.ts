@@ -82,4 +82,19 @@ export class DayService {
         
         return await this.dayRepository.save(day);
     }
+
+    getOneById = async (id: string) => {
+        const day = await this.dayRepository.findOne({
+            where: {id: +id},
+            relations: {
+                dayUnits: true
+            }
+        });
+
+        if(!day) {
+            throw new HttpException('Значение не найдено', HttpStatus.NOT_FOUND);
+        }
+
+        return day;
+    }
 }

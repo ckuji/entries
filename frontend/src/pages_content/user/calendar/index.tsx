@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Input } from "@chakra-ui/react";
+import { Box, Flex, Input } from "@chakra-ui/react";
 import moment from "moment";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { MONTHS } from "../../../constants";
@@ -42,7 +42,7 @@ const Calendar: React.FC<CalendarProps> = ({userId}) => {
             dispatch(resetEditableDayElements());
         }
         let localDayData = userData.days.find(item => item.date === dateValue);
-        if(localDayData) {
+        if(localDayData && (localDayData.description || +localDayData.hours || localDayData.dayUnits.length)) {
             setSelectedDayData(localDayData);
         } else {
             setSelectedDayData({
@@ -64,9 +64,11 @@ const Calendar: React.FC<CalendarProps> = ({userId}) => {
     }, [changeDayLoading]);
 
     useEffect(() => {
-        dispatch(setDateValue(moment().format('DD.MM.YYYY')));
+        if(!dateValue) {
+            dispatch(setDateValue(moment().format('DD.MM.YYYY')));
+        }
         calendarHandler(moment().format('DD.MM.YYYY'));
-    }, []);
+    }, [changeDayLoading]);
 
     const calendarHandler = (localInputValue: string) => {
         const selectedDate = moment(localInputValue, 'DD.MM.YYYY', true);
@@ -80,10 +82,23 @@ const Calendar: React.FC<CalendarProps> = ({userId}) => {
 
             for(let i = 1; i <= daysInMonth; i++) {
                 let newI = i.toString().length === 1 ? ('0' + i) : i.toString();
-                let date = moment((newI + commonDatePart), 'DD.MM.YYYY', true);
+                let date: any = {value: moment((newI + commonDatePart), 'DD.MM.YYYY', true)};
+
+                let dayExist = userData.days.find((item) => item.date === date.value.format('DD.MM.YYYY'));
+
+                if(dayExist) {
+                    let performance = +dayExist.hours / 8;
+                    let ceiledLineAmount = Math.ceil(performance * 5);
+                    let lineAmountArray = [];
+                    for(let j = 0; j < ceiledLineAmount; j++) {
+                        lineAmountArray.push(j);
+                    }
+
+                    date.lineAmountArray = lineAmountArray;
+                }
 
                 week.push(date);
-                if(Number(date.format('E')) % 7 === 0) {
+                if(Number(date.value.format('E')) % 7 === 0) {
                     weeksArray.push(week);
                     week = [];
                 }
@@ -242,29 +257,36 @@ const Calendar: React.FC<CalendarProps> = ({userId}) => {
             <Box w='fit-content' mt='20px'>
                 <CalendarMonth month={month} changeMonthHandler={changeMonthHandler} />
                 <CalendarNet weeks={weeks} dateValue={dateValue} setInputValueHandler={setInputValueHandler} />
-                <Box m='10px 0' minH='200px' border='1px solid #d6d6d6' fontSize='sm'>
-                    {selectedDayData.date ?
-                        <>
-                            <CalendarDayInfoDescription
-                                selectedDayData={selectedDayData}
-                                editableCalendar={editableCalendar}
-                                setSelectedDayData={setSelectedDayData}
-                                editableDayElements={editableDayElements}
-                            />
-                            <CalendarDayInfoItems
-                                selectedDayData={selectedDayData}
-                                editableCalendar={editableCalendar}
-                                setSelectedDayData={setSelectedDayData}
-                            />
-                            <CalendarDayInfoHours
-                                selectedDayData={selectedDayData}
-                                editableCalendar={editableCalendar}
-                                setSelectedDayData={setSelectedDayData}
-                                editableDayElements={editableDayElements}
-                            />
-                        </>
-                        : <Box p='0 5px'>Список пуст</Box>
-                    }
+                <Box w={{base: '273px', sm: '426px'}} m='10px 0' pr='5px' border='1px solid #d6d6d6' fontSize='sm'>
+                    <Box>
+                        {selectedDayData.date ?
+                        <Flex minH='200px' flexDirection='column' justifyContent='space-between'>
+                            <Box>
+                                <CalendarDayInfoDescription
+                                    selectedDayData={selectedDayData}
+                                    editableCalendar={editableCalendar}
+                                    setSelectedDayData={setSelectedDayData}
+                                    editableDayElements={editableDayElements}
+                                />
+                                <CalendarDayInfoItems
+                                    selectedDayData={selectedDayData}
+                                    editableCalendar={editableCalendar}
+                                    setSelectedDayData={setSelectedDayData}
+                                />
+                                <CalendarDayInfoHours
+                                    selectedDayData={selectedDayData}
+                                    editableCalendar={editableCalendar}
+                                    setSelectedDayData={setSelectedDayData}
+                                    editableDayElements={editableDayElements}
+                                />
+                            </Box>
+                            <Flex justifyContent='flex-end' pr='5px'>
+                                {selectedDayData.updatedAt && moment(selectedDayData.updatedAt).format('DD.MM.YYYY')}
+                            </Flex>
+                        </Flex>
+                        : <Box minH='200px' p='0 5px'>Список пуст</Box>
+                        }
+                    </Box>
                 </Box>
             </Box>
             <UserElementSettings
@@ -272,7 +294,7 @@ const Calendar: React.FC<CalendarProps> = ({userId}) => {
                 onChangeEditElementHandler={onChangeEditCalendarHandler}
                 editableElement={editableCalendar}
                 isDisabledSaveButton={
-                    !dayChangedFields.description && dayChangedFields.hours === undefined && !dayChangedFields.dayUnits?.length
+                    dayChangedFields.description === undefined && dayChangedFields.hours === undefined && !dayChangedFields.dayUnits?.length
                 }
                 onClickSaveButton={onClickSaveButton}
                 successMessage={successMessage}

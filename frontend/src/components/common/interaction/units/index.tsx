@@ -61,8 +61,8 @@ const Units: React.FC<UnitsProps> = ({
                 type === 'experience' ? 'Навыков 0' : ''
             }
             {editableUnits ?
-                <Box m='5px 0'>
-                    <Text fontSize='sm'>{
+                <Box m='10px 0'>
+                    <Text fontSize='sm' mb='5px'>{
                             type === 'links' ? 'Создать новую ссылку' :
                             type === 'experience' ? 'Добавить навык' : ''
                         }</Text>

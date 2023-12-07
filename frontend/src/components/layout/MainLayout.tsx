@@ -17,9 +17,14 @@ const MainLayout: React.FC<MainLayoutProps> = ({children}) => {
                 borderTopWidth='1px'
                 borderTopStyle='solid'
                 borderTopColor='gray.300'
+                borderBottomWidth='1px'
+                borderBottomStyle='solid'
+                borderBottomColor='gray.300'
                 _dark={{
-                    borderTopColor: 'gray.600'
+                    borderTopColor: 'gray.600',
+                    borderBottomColor: 'gray.600'
                 }}
+                pb='50px'
             >
                 {children}
             </Box>

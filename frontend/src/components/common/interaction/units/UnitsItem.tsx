@@ -82,7 +82,7 @@ const UnitsItem: React.FC<UnitsItemProps> = ({
 
     return (
         <Flex
-            gap='5px 0'
+            gap='10px 0'
             className="list-item"
             flexWrap='wrap'
             alignItems={type === 'experience' ? 'center' : 'flex-start'}

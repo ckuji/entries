@@ -32,7 +32,7 @@ const ExperienceListItem: React.FC<ExperienceListItemProps> = ({editableUnits, n
                     w={`${addition}%`}
                     bgGradient='linear(to-r, greenBand.600, greenBand.700)'
                 ></Box>
-                <Box ml='5px' w='50px'>{addition}%</Box>
+                <Box ml='5px' w='50px' fontSize='sm'>{addition}%</Box>
             </Flex>
         </Box>
     );
