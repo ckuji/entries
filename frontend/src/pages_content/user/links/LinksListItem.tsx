@@ -20,7 +20,7 @@ const LinksListItem: React.FC<LinksListItemProps> = ({editableUnits, name, addit
                 mr='10px'
                 display='flex'
                 alignItems='center'
-                color='blue'
+                color='blue.500'
                 textDecoration='underline'
                 wordBreak='break-word'
             >

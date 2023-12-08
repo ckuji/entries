@@ -1,4 +1,4 @@
-import { Box } from "@chakra-ui/react";
+import { Box, Switch, Flex } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { 
@@ -30,6 +30,7 @@ const Experience: React.FC<ExperienceProps> = ({userId}) => {
         name: '', addition: ''
     });
     const [experienceForDisplay, setExperienceForDisplay] = useState<IUnitsItemWithId[]>([]);
+    const [currentExperience, setCurrentExperience] = useState<boolean>(true);
 
     useEffect(() => {
         if(createExpItemLoading === 'fulfilled') {
@@ -42,16 +43,31 @@ const Experience: React.FC<ExperienceProps> = ({userId}) => {
     }, [createExpItemLoading]);
 
     useEffect(() => {
+        let dayExpSum: {[key: string]: number};
+        if(currentExperience) {
+            dayExpSum = userData.days.reduce((expItems, currentValue) => {
+                let newExpItems: {[key: string]: number} = expItems;
+                currentValue.dayUnits.map((item) => {
+                    newExpItems[item.name] = newExpItems[item.name] ? (+newExpItems[item.name]! + +item.percent) : +item.percent;
+                });
+                return newExpItems;
+            }, {} );
+        }
+
         const itemsForDisplay = userData.experience.map((item) => {
             let newItem: TransformExperience = {...item, addition: ''};
             delete newItem.percent;
-            newItem.addition = item.percent.toString();
+            if(currentExperience && dayExpSum[item.name]) {
+                newItem.addition = (+item.percent + dayExpSum[item.name]!).toFixed().toString();
+            } else {
+                newItem.addition = item.percent.toString();
+            }
 
             return newItem;
-        })
+        });
 
         setExperienceForDisplay(itemsForDisplay);
-    }, [userData]);
+    }, [userData, currentExperience]);
 
     const onChangeEditExpItemHandler = (editedItem: number) => {
         if(editedItem === editedExpItem) {
@@ -94,8 +110,16 @@ const Experience: React.FC<ExperienceProps> = ({userId}) => {
         }));
     }
 
+    const toggleCurrentExperiencerHandler = () => {
+        setCurrentExperience(!currentExperience);
+    }
+
     return (
         <Box w='100%' mt='30px'>
+            <Flex gap='20px' mb='10px'>
+                <Box>На данный момент</Box>
+                <Switch size='lg' onChange={toggleCurrentExperiencerHandler} isChecked={currentExperience}/>
+            </Flex>
             <Units
                 items={experienceForDisplay}
                 onChangeEditUnitsItemHandler={onChangeEditExpItemHandler}

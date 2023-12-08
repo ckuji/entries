@@ -96,7 +96,10 @@ const CalendarDayInfoItem: React.FC<CalendarDayInfoItemProps> = ({
                 </> :
                 <>
                     <Box>{name}</Box>
-                    <Box color='greenBand.600'>+{percent}%</Box>
+                    <Box color={+percent >= 0 ? 'greenBand.600' : '#fa5b16'}>
+                        {+percent >= 0 ? <>+</> : ''}
+                        {percent}%
+                    </Box>
                 </>
             }
             {editableCalendar ?

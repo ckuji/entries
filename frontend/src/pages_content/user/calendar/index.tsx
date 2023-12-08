@@ -88,6 +88,7 @@ const Calendar: React.FC<CalendarProps> = ({userId}) => {
 
                 if(dayExist) {
                     let performance = +dayExist.hours / 8;
+                    if(performance > 1) performance = 1;
                     let ceiledLineAmount = Math.ceil(performance * 5);
                     let lineAmountArray = [];
                     for(let j = 0; j < ceiledLineAmount; j++) {

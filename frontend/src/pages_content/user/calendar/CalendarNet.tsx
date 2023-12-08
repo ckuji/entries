@@ -61,8 +61,9 @@ const CalendarNet: React.FC<CalendarNetProps> = ({weeks, dateValue, setInputValu
                             <Box>{unit.value.format('DD')}</Box>
                             {unit.lineAmountArray ?
                                 <Flex m='0 0 5px 10px'>
-                                    {unit.lineAmountArray.map((item: number) =>
+                                    {unit.lineAmountArray.map((item: number, index: number) =>
                                         <Box
+                                            key={`${item}_${index}`}
                                             h='8px'
                                             w={{base: '1px', sm: '3px'}}
                                             mr={{base: '2px', sm: '4px'}}
