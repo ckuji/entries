@@ -8,6 +8,7 @@ import {
     updateDescription
 } from "../../state/slices/user";
 import UserElementSettings from "../../components/common/interaction/UserElementSettings";
+import moment from "moment";
 
 type DescriptionProps = {
     userId: string
@@ -56,6 +57,9 @@ const Description: React.FC<DescriptionProps> = ({userId}) => {
                 <Text fontSize='sm'>
                     {userData?.profile?.description || 'Описание не заполнено'}
                 </Text>
+            }
+            {userData?.profile?.updatedAt ?
+                <Text mt='5px' fontSize='sm'>{moment(userData?.profile?.updatedAt).format('DD.MM.YYYY')}</Text> : ''
             }
             <UserElementSettings
                 editablePage={editablePage}

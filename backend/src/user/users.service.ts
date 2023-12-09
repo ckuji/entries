@@ -46,7 +46,8 @@ export class UsersService {
                 login: true,
                 profile: {
                     id: true,
-                    description: true
+                    description: true,
+                    updatedAt: true
                 }
             },
             order: {

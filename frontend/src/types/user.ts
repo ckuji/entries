@@ -33,6 +33,7 @@ export type User = {
 }
 
 type Profile = {
+    updatedAt?: string,
     description: string,
     initialDescription: string
 }
