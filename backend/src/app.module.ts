@@ -26,7 +26,6 @@ import { DayUnitModule } from './day_unit/dayUnit.module';
         username: configService.get('POSTGRES_USER'),
         password: configService.get('POSTGRES_PASSWORD'),
         database: configService.get('POSTGRES_DB'),
-        synchronize: true, //shouldn't be used in production
         autoLoadEntities: true
       })
     }),
